@@ -9,6 +9,14 @@ const TIMEOUT_MS = 30_000;
 const MIN_INPUT = 30;
 const MAX_INPUT = 2000;
 
+// Fallback chain. OpenRouter tries primary first; on errors (incl. 429s
+// when one provider's pool is throttled upstream) it falls through in order.
+// Quality-ordered for creative/Hinglish output.
+const FALLBACK_MODELS = [
+  'meta-llama/llama-3.3-70b-instruct',
+  'deepseek/deepseek-chat',
+];
+
 const RETRY_INSTRUCTION =
   '\n\nIMPORTANT: Respond with VALID JSON ONLY — no prose, no markdown fences, no commentary. Exactly the three string fields specified above.';
 
@@ -66,11 +74,13 @@ const callProvider = async (
 ): Promise<ProviderResult> => {
   const baseUrl = process.env.AI_PROVIDER_BASE_URL ?? 'https://openrouter.ai/api/v1';
   const apiKey = process.env.AI_PROVIDER_API_KEY;
-  const model = process.env.AI_MODEL ?? 'google/gemini-2.0-flash-001';
+  const primaryModel = process.env.AI_MODEL ?? 'google/gemini-2.0-flash-001';
 
   if (!apiKey) {
     return { ok: false, status: 500, message: 'AI provider API key not configured' };
   }
+
+  const models = [primaryModel, ...FALLBACK_MODELS.filter((m) => m !== primaryModel)];
 
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: 'POST',
@@ -81,7 +91,7 @@ const callProvider = async (
       'X-Title': 'Mirror',
     },
     body: JSON.stringify({
-      model,
+      models,
       max_tokens: MAX_TOKENS,
       response_format: { type: 'json_object' },
       messages: [

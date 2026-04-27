@@ -386,11 +386,12 @@ export default function Home() {
                 className="w-full bg-white/[0.04] border border-white/10 rounded-[14px] p-4 text-white text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
                 style={{ ['--tone-accent' as never]: T.accent }}
               />
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
                 <select
                   value={countryCode}
                   onChange={(e) => setCountryCode(e.target.value)}
-                  className="bg-white/[0.04] border border-white/10 rounded-[14px] py-4 px-3 text-white text-[16px] font-sans outline-none min-w-[100px]"
+                  aria-label="Country code"
+                  className="shrink-0 w-[96px] bg-white/[0.04] border border-white/10 rounded-[14px] py-4 px-2 text-white text-[16px] font-sans outline-none appearance-none text-center"
                 >
                   {COUNTRY_CODES.map((c) => (
                     <option key={c.code} value={c.code} className="bg-[#1a1a1a]">
@@ -405,7 +406,7 @@ export default function Home() {
                   type="tel"
                   inputMode="numeric"
                   autoComplete="tel"
-                  className="flex-1 bg-white/[0.04] border border-white/10 rounded-[14px] p-4 text-white text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
+                  className="flex-1 min-w-0 bg-white/[0.04] border border-white/10 rounded-[14px] p-4 text-white text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
                   style={{ ['--tone-accent' as never]: T.accent }}
                 />
               </div>
