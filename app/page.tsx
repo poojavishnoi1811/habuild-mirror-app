@@ -486,7 +486,8 @@ export default function Home() {
                       : tone === 'mirror'
                       ? 'saw through me'
                       : 'destroyed me politely (in maa voice)';
-                  const link = leadId ? `mirror.app/r/${leadId}` : 'mirror.app';
+                  const origin = window.location.origin;
+                  const link = leadId ? `${origin}/r/${leadId}` : origin;
                   const msg = encodeURIComponent(
                     `bro this AI just ${verb} and honestly i think you need this more than i did. try it: ${link}`,
                   );
@@ -498,7 +499,8 @@ export default function Home() {
               </button>
               <button
                 onClick={() => {
-                  const url = leadId ? `https://mirror.app/r/${leadId}` : 'https://mirror.app';
+                  const origin = window.location.origin;
+                  const url = leadId ? `${origin}/r/${leadId}` : origin;
                   if (navigator.share) {
                     void navigator.share({ title: 'Mirror', text: punchLine, url });
                     return;
