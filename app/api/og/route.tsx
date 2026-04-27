@@ -58,7 +58,7 @@ export async function GET(request: Request) {
   }
 
   const T = TONES[tone];
-  const fontData = await fetch(new URL('/fonts/InstrumentSerif-Italic.ttf', request.url)).then(
+  const fontData = await fetch(new URL('/fonts/Fraunces-Italic.woff', request.url)).then(
     (r) => r.arrayBuffer(),
   );
 
@@ -125,7 +125,7 @@ export async function GET(request: Request) {
         >
           <div
             style={{
-              fontFamily: 'Instrument Serif',
+              fontFamily: 'Fraunces',
               fontSize: 84,
               lineHeight: 1.18,
               fontStyle: 'italic',
@@ -156,7 +156,7 @@ export async function GET(request: Request) {
       height: 1200,
       fonts: [
         {
-          name: 'Instrument Serif',
+          name: 'Fraunces',
           data: fontData,
           style: 'italic',
           weight: 400,

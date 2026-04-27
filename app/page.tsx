@@ -8,6 +8,7 @@ import {
   Send,
   Phone,
   ArrowRight,
+  ArrowLeft,
   Share2,
   RotateCcw,
   MessageCircle,
@@ -163,6 +164,16 @@ export default function Home() {
     setSubmitting(false);
   };
 
+  const goBack = () => {
+    setError(null);
+    if (screen === 'input') setScreen('tone');
+    else if (screen === 'tease') setScreen('input');
+    else if (screen === 'capture') setScreen('tease');
+  };
+
+  const canGoBack = screen === 'input' || screen === 'tease' || screen === 'capture';
+  const showRestart = screen !== 'tone';
+
   const { body, fix } = aiResponse
     ? splitFix(aiResponse.reflection, aiResponse.fix_line)
     : { body: '', fix: '' };
@@ -174,14 +185,26 @@ export default function Home() {
     <div className="min-h-screen bg-[#FAF7F0] text-[#26211D]">
       <div className="max-w-[520px] mx-auto px-5 py-6 pb-12 min-h-screen flex flex-col">
         <header className="flex justify-between items-center mb-10">
-          <div className="font-serif text-[20px] tracking-tight text-[#26211D]">Mirror</div>
-          {screen !== 'tone' && (
+          {canGoBack ? (
+            <button
+              onClick={goBack}
+              aria-label="Go back"
+              className="text-[12px] text-[#73685C] border border-[#E8DFD2] rounded-full pl-2.5 pr-3 py-1.5 flex items-center gap-1.5 hover:bg-[#F2EBDD] transition-colors font-sans"
+            >
+              <ArrowLeft size={14} /> back
+            </button>
+          ) : (
+            <div className="font-serif text-[20px] tracking-tight text-[#26211D]">Mirror</div>
+          )}
+          {showRestart ? (
             <button
               onClick={reset}
               className="text-[12px] text-[#73685C] border border-[#E8DFD2] rounded-full px-3 py-1.5 flex items-center gap-1.5 hover:bg-[#F2EBDD] transition-colors font-sans"
             >
               <RotateCcw size={11} /> restart
             </button>
+          ) : (
+            <div />
           )}
         </header>
 
