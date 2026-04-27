@@ -70,9 +70,9 @@ export default async function SharePage({ params }: Props) {
         </header>
 
         <div className="fade-up flex-1 flex flex-col">
-          <h1 className="font-serif text-[36px] leading-[1.08] tracking-[-0.02em] m-0 mb-6 text-[#26211D]">
+          <h1 className="font-sans font-bold text-[36px] leading-[1.1] tracking-[-0.025em] m-0 mb-6 text-[#26211D]">
             {name} just got{' '}
-            <em className="font-normal" style={{ color: T.accent }}>
+            <em className="font-serif italic font-normal" style={{ color: T.accent }}>
               {T.label.toLowerCase()}
             </em>
             .
@@ -100,18 +100,18 @@ export default async function SharePage({ params }: Props) {
           />
 
           <div
-            className="rounded-2xl p-5 mb-3 text-white"
+            className="rounded-3xl p-5 mb-3 text-white"
             style={{ background: T.accent, boxShadow: CARD_SHADOW }}
           >
-            <div className="text-[12px] opacity-90 mb-2 font-sans">Want yours?</div>
-            <div className="font-serif text-[22px] leading-snug">
+            <div className="text-[12px] opacity-90 mb-2 font-sans uppercase tracking-wider">Want yours?</div>
+            <div className="font-sans font-bold text-[20px] leading-snug">
               30 seconds. Type your day. Hear yourself, differently.
             </div>
           </div>
 
           <Link
             href={`/?ref=${lead.id}`}
-            className="text-center bg-[#26211D] text-white border-0 px-6 py-4 rounded-[14px] text-base font-semibold font-sans hover:bg-black transition-colors"
+            className="text-center bg-[#26211D] text-white border-0 px-6 py-4 rounded-full text-base font-semibold font-sans hover:bg-black transition-colors"
             style={{ boxShadow: CARD_SHADOW }}
           >
             Get my read →

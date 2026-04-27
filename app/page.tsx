@@ -212,12 +212,13 @@ export default function Home() {
         {screen === 'tone' && (
           <div className="fade-up flex-1 flex flex-col">
             <div className="mt-2 mb-10">
-              <h1 className="font-serif text-[44px] sm:text-[52px] leading-[1.04] tracking-[-0.02em] m-0 mb-5 text-[#26211D]">
+              <h1 className="font-sans font-bold text-[42px] sm:text-[56px] leading-[1.05] tracking-[-0.025em] m-0 mb-5 text-[#26211D]">
                 Tell me about your day.
-                <br />
-                <em className="text-[#8C7B68] font-normal">I&apos;ll tell you something true.</em>
               </h1>
-              <p className="font-sans text-[15px] text-[#73685C] leading-relaxed m-0">
+              <p className="font-serif italic text-[20px] sm:text-[22px] text-[#73685C] leading-snug m-0 mb-3">
+                I&apos;ll tell you something true.
+              </p>
+              <p className="font-sans text-[14px] text-[#A99B89] m-0">
                 Pick a voice. Type your day. Hear yourself, differently.
               </p>
             </div>
@@ -233,23 +234,23 @@ export default function Home() {
                       setTone(tn.id);
                       setScreen('input');
                     }}
-                    className="fade-up bg-white border border-[#E8DFD2] rounded-2xl p-5 text-left text-[#26211D] flex items-center gap-4 transition-all hover:-translate-y-0.5 font-sans"
+                    className="fade-up bg-white border border-transparent rounded-3xl p-5 text-left text-[#26211D] flex items-center gap-4 transition-all hover:-translate-y-0.5 font-sans"
                     style={{ animationDelay: `${i * 80}ms`, boxShadow: CARD_SHADOW }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = tn.accent;
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = '#E8DFD2';
+                      e.currentTarget.style.borderColor = 'transparent';
                     }}
                   >
                     <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
                       style={{ background: tn.accent }}
                     >
                       <Icon size={22} color="#fff" strokeWidth={2} />
                     </div>
                     <div className="flex-1">
-                      <div className="font-serif text-[24px] leading-tight mb-1 text-[#26211D]">
+                      <div className="font-sans font-semibold text-[20px] leading-tight mb-1 text-[#26211D]">
                         {tn.label}
                       </div>
                       <div className="text-[12px] text-[#73685C]">
@@ -275,9 +276,9 @@ export default function Home() {
               <div className="text-[12px] mb-3 font-sans" style={{ color: T.accent }}>
                 — {T.label.toLowerCase()}
               </div>
-              <h2 className="font-serif text-[34px] leading-tight m-0 mb-3 text-[#26211D]">
+              <h2 className="font-sans font-bold text-[32px] leading-[1.1] tracking-tight m-0 mb-3 text-[#26211D]">
                 Type your day.
-              </h2>
+              </h2>{/* spacer */}
               <p className="font-sans text-[14px] text-[#73685C] leading-relaxed m-0">
                 Wake time, food, work, screens, sleep. The more honest, the sharper the read.
               </p>
@@ -306,7 +307,7 @@ export default function Home() {
             <button
               onClick={callAI}
               disabled={dayInput.trim().length < MIN_INPUT}
-              className="border-0 px-6 py-4 rounded-[14px] text-base font-semibold flex items-center justify-center gap-2.5 transition-all font-sans disabled:cursor-not-allowed disabled:opacity-40"
+              className="border-0 px-6 py-4 rounded-full text-base font-semibold flex items-center justify-center gap-2.5 transition-all font-sans disabled:cursor-not-allowed disabled:opacity-40"
               style={{ background: T.accent, color: '#fff' }}
             >
               {T.ctaLabel}
@@ -327,7 +328,7 @@ export default function Home() {
                 return <Icon size={36} color="#fff" />;
               })()}
             </div>
-            <div className="font-serif text-[32px] leading-tight mb-3 text-[#26211D]">
+            <div className="font-sans font-semibold text-[28px] leading-tight mb-3 text-[#26211D]">
               {T.loadingMessages[loadingMsgIdx]}…
             </div>
             <div className="text-[12px] text-[#A99B89] font-sans">this takes about 10 seconds</div>
@@ -367,8 +368,8 @@ export default function Home() {
               className="rounded-2xl p-5 mb-5 text-white"
               style={{ background: T.accent, boxShadow: CARD_SHADOW }}
             >
-              <div className="text-[12px] opacity-90 mb-2 font-sans">Unlock the rest</div>
-              <div className="font-serif text-[22px] leading-snug mb-1">
+              <div className="text-[12px] opacity-90 mb-2 font-sans uppercase tracking-wider">Unlock the rest</div>
+              <div className="font-sans font-bold text-[20px] leading-snug mb-1">
                 See the full read + your 14-day reset plan.
               </div>
               <div className="font-sans text-[13px] opacity-90">
@@ -378,7 +379,7 @@ export default function Home() {
 
             <button
               onClick={() => setScreen('capture')}
-              className="bg-[#26211D] text-white border-0 px-6 py-4 rounded-[14px] text-base font-semibold flex items-center justify-center gap-2.5 font-sans hover:bg-black transition-colors"
+              className="bg-[#26211D] text-white border-0 px-6 py-4 rounded-full text-base font-semibold flex items-center justify-center gap-2.5 font-sans hover:bg-black transition-colors"
             >
               <Phone size={18} /> Unlock my full read
             </button>
@@ -392,7 +393,7 @@ export default function Home() {
               <div className="text-[12px] mb-3 font-sans" style={{ color: T.accent }}>
                 — one step left
               </div>
-              <h2 className="font-serif text-[34px] leading-tight m-0 mb-2 text-[#26211D]">
+              <h2 className="font-sans font-bold text-[32px] leading-[1.1] tracking-tight m-0 mb-2 text-[#26211D]">
                 Where do I send this?
               </h2>
               <p className="font-sans text-[14px] text-[#73685C] leading-relaxed m-0">
@@ -445,7 +446,7 @@ export default function Home() {
             <button
               onClick={handleSubmitInfo}
               disabled={submitting}
-              className="border-0 px-6 py-4 rounded-[14px] text-base font-semibold flex items-center justify-center gap-2.5 font-sans mb-3 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="border-0 px-6 py-4 rounded-full text-base font-semibold flex items-center justify-center gap-2.5 font-sans mb-3 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ background: T.accent, color: '#fff' }}
             >
               <Send size={18} /> {submitting ? 'Sending…' : 'Send me my full read'}
@@ -520,7 +521,7 @@ export default function Home() {
                   );
                   window.open(`https://wa.me/?text=${msg}`, '_blank');
                 }}
-                className="bg-[#25D366] text-white border-0 px-5 py-3.5 rounded-[14px] text-[15px] font-semibold flex items-center justify-center gap-2.5 font-sans"
+                className="bg-[#25D366] text-white border-0 px-5 py-3.5 rounded-full text-[15px] font-semibold flex items-center justify-center gap-2.5 font-sans"
                 style={{ boxShadow: CARD_SHADOW }}
               >
                 <MessageCircle size={18} /> Send to a friend who needs it more
@@ -537,7 +538,7 @@ export default function Home() {
                     void navigator.clipboard.writeText(`"${punchLine}" — try Mirror: ${url}`);
                   }
                 }}
-                className="bg-white text-[#26211D] border border-[#E8DFD2] px-5 py-3.5 rounded-[14px] text-[15px] font-medium flex items-center justify-center gap-2.5 font-sans"
+                className="bg-white text-[#26211D] border border-[#E8DFD2] px-5 py-3.5 rounded-full text-[15px] font-medium flex items-center justify-center gap-2.5 font-sans"
                 style={{ boxShadow: CARD_SHADOW }}
               >
                 <Share2 size={18} /> Share my read
