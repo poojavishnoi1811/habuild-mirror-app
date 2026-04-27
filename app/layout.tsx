@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next';
-import { Fraunces, Inter } from 'next/font/google';
+import { Newsreader, Inter } from 'next/font/google';
 import './globals.css';
 
-const serif = Fraunces({
+const serif = Newsreader({
   subsets: ['latin'],
   weight: ['400', '500'],
   style: ['normal', 'italic'],

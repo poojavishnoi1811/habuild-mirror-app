@@ -58,7 +58,7 @@ export async function GET(request: Request) {
   }
 
   const T = TONES[tone];
-  const fontData = await fetch(new URL('/fonts/Fraunces-Italic.woff', request.url)).then(
+  const fontData = await fetch(new URL('/fonts/Newsreader-Italic.woff', request.url)).then(
     (r) => r.arrayBuffer(),
   );
 
@@ -125,7 +125,7 @@ export async function GET(request: Request) {
         >
           <div
             style={{
-              fontFamily: 'Fraunces',
+              fontFamily: 'Newsreader',
               fontSize: 84,
               lineHeight: 1.18,
               fontStyle: 'italic',
@@ -156,7 +156,7 @@ export async function GET(request: Request) {
       height: 1200,
       fonts: [
         {
-          name: 'Fraunces',
+          name: 'Newsreader',
           data: fontData,
           style: 'italic',
           weight: 400,
