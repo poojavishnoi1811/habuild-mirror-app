@@ -39,12 +39,13 @@ If you have not read all three, do not write code yet. Read them and confirm und
 ### UI
 
 - **Mobile-first.** All screens designed for ~380px width primary. Test on real devices, not just Chrome DevTools.
-- Typography: **Instrument Serif** for display (italic preferred), **Inter** for body, **JetBrains Mono** for labels.
-- Tone-based color system — three palettes, each tone has its own background and accent. See `lib/tones.ts`.
+- **Aesthetic: Pinterest-style cream-on-cream.** Page bg `#FAF7F0`, primary text `#26211D`, muted `#73685C`, subtle `#A99B89`, cards `#FFFFFF` with soft shadow `0 2px 16px rgba(40,28,16,0.06)`, borders `#E8DFD2`. Generous whitespace, layered paper feel.
+- Typography: **Instrument Serif** for display (italic only on the punchy line + `<em>` accents — not on every headline), **Inter** for body and small labels. JetBrains Mono is loaded but reserved for true system labels (timer, char count); avoid it for tone labels.
+- Tone-driven palette is **applied as accents only** — buttons, focus borders, label highlights, the share-card background (the screenshot moment). Page backgrounds stay cream regardless of tone.
 - Touch targets ≥ 44×44px.
-- Inputs use `inputMode` and `type` correctly (`type="tel"` for phone, etc).
-- No generic AI-template aesthetic (no purple gradients on white, no Inter-everywhere).
-- Reference points: Cred app, Zerodha Varsity, Spotify Wrapped, BeReal.
+- Inputs use `inputMode` and `type` correctly (`type="tel"` for phone, etc), placeholder color `#A99B89`.
+- No generic AI-template aesthetic (no purple gradients, no dark-mode-everywhere).
+- Reference points: Pinterest pin layout, editorial fashion magazines, Cardo/Garamond editorial tradition.
 
 ### Copy
 

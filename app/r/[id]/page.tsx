@@ -13,6 +13,8 @@ type LeadRow = {
   ai_response: { punchy_line?: string; reflection?: string } | null;
 };
 
+const CARD_SHADOW = '0 2px 16px rgba(40,28,16,0.06)';
+
 const fetchLead = async (id: string): Promise<LeadRow | null> => {
   try {
     const { data, error } = await serverClient()
@@ -58,45 +60,35 @@ export default async function SharePage({ params }: Props) {
   const name = lead.name ?? 'anonymous';
 
   return (
-    <div
-      className="min-h-screen relative overflow-hidden"
-      style={{ background: T.bg, color: '#fff' }}
-    >
-      <div className="grain pointer-events-none fixed inset-0" />
-
+    <div className="min-h-screen bg-[#FAF7F0] text-[#26211D]">
       <div className="max-w-[520px] mx-auto px-5 py-6 pb-12 min-h-screen flex flex-col">
-        <header className="flex justify-between items-center mb-8">
-          <div className="font-mono text-[13px] uppercase tracking-[0.1em] text-white/55">
-            Mirror
-          </div>
-          <div
-            className="font-mono text-[11px] uppercase tracking-[0.1em]"
-            style={{ color: T.accent }}
-          >
+        <header className="flex justify-between items-center mb-10">
+          <div className="font-serif text-[20px] tracking-tight">Mirror</div>
+          <div className="text-[12px] font-sans" style={{ color: T.accent }}>
             shared with you
           </div>
         </header>
 
         <div className="fade-up flex-1 flex flex-col">
-          <h1 className="font-serif text-[36px] leading-[1.1] tracking-[-0.02em] m-0 mb-6">
+          <h1 className="font-serif text-[36px] leading-[1.08] tracking-[-0.02em] m-0 mb-6 text-[#26211D]">
             {name} just got{' '}
-            <em style={{ color: T.accent }}>{T.label.toLowerCase()}</em>.
+            <em className="font-normal" style={{ color: T.accent }}>
+              {T.label.toLowerCase()}
+            </em>
+            .
           </h1>
 
           <div
-            className="rounded-2xl p-6 mb-6 bg-white/[0.04] border border-white/10 relative overflow-hidden"
+            className="rounded-2xl p-6 mb-6 bg-white border border-[#E8DFD2]"
+            style={{ boxShadow: CARD_SHADOW }}
           >
-            <p className="font-serif italic text-[22px] leading-snug m-0">
+            <p className="font-serif italic text-[22px] leading-snug m-0 text-[#26211D]">
               &ldquo;{punchy}&rdquo;
             </p>
-            <p className="font-mono text-[10px] tracking-[0.12em] mt-4 m-0 opacity-60">
-              — {name}
-            </p>
+            <p className="text-[11px] mt-4 m-0 text-[#A99B89] font-sans">— {name}</p>
           </div>
 
-          <div className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/45 mb-3">
-            ↓ their share card
-          </div>
+          <div className="text-[11px] text-[#A99B89] mb-2 font-sans">↓ their share card</div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`/api/og?id=${lead.id}`}
@@ -104,27 +96,28 @@ export default async function SharePage({ params }: Props) {
             width={1200}
             height={1200}
             className="w-full rounded-2xl mb-8"
-            style={{ aspectRatio: '1 / 1' }}
+            style={{ aspectRatio: '1 / 1', boxShadow: CARD_SHADOW }}
           />
 
-          <div className="rounded-2xl p-5 mb-3" style={{ background: T.accent }}>
-            <div className="font-mono text-[11px] uppercase tracking-[0.1em] opacity-85 mb-2">
-              Want yours?
-            </div>
-            <div className="font-serif text-xl leading-snug">
+          <div
+            className="rounded-2xl p-5 mb-3 text-white"
+            style={{ background: T.accent, boxShadow: CARD_SHADOW }}
+          >
+            <div className="text-[12px] opacity-90 mb-2 font-sans">Want yours?</div>
+            <div className="font-serif text-[22px] leading-snug">
               30 seconds. Type your day. Hear yourself, differently.
             </div>
           </div>
 
           <Link
             href={`/?ref=${lead.id}`}
-            className="text-center bg-white text-black border-0 px-6 py-4 rounded-[14px] text-base font-semibold font-sans"
-            style={{ color: T.bg }}
+            className="text-center bg-[#26211D] text-white border-0 px-6 py-4 rounded-[14px] text-base font-semibold font-sans hover:bg-black transition-colors"
+            style={{ boxShadow: CARD_SHADOW }}
           >
             Get my read →
           </Link>
 
-          <div className="mt-8 font-mono text-[10px] text-white/30 text-center">
+          <div className="mt-10 text-[11px] text-[#A99B89] text-center font-sans">
             built in 48 hours · brutally honest · share-worthy
           </div>
         </div>

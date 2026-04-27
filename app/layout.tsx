@@ -26,19 +26,19 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'Mirror — see your day, differently',
-  description: 'Tell me about your day. I\'ll tell you something true.',
+  description: "Tell me about your day. I'll tell you something true.",
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0A0A0F',
+  themeColor: '#FAF7F0',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
-      <body className="font-sans antialiased bg-[#0A0A0F] text-white">{children}</body>
+      <body className="font-sans antialiased bg-[#FAF7F0] text-[#26211D]">{children}</body>
     </html>
   );
 }

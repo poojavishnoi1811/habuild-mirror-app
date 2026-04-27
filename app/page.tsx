@@ -38,7 +38,13 @@ const COUNTRY_CODES = [
 
 const MIN_INPUT = 30;
 
-const splitFix = (reflection: string, fixLine: string) => ({ body: reflection.trim(), fix: fixLine.trim() });
+const splitFix = (reflection: string, fixLine: string) => ({
+  body: reflection.trim(),
+  fix: fixLine.trim(),
+});
+
+// Soft Pinterest-style elevation. Used on every card and key input.
+const CARD_SHADOW = '0 2px 16px rgba(40,28,16,0.06)';
 
 export default function Home() {
   const [screen, setScreen] = useState<Screen>('tone');
@@ -165,19 +171,14 @@ export default function Home() {
   const teaseText = body.split(/(?<=[.!?])\s+/).slice(0, 2).join(' ');
 
   return (
-    <div
-      className="min-h-screen relative overflow-hidden transition-[background] duration-700"
-      style={{ background: T ? T.bg : '#0A0A0F' }}
-    >
-      <div className="grain pointer-events-none fixed inset-0" />
-
+    <div className="min-h-screen bg-[#FAF7F0] text-[#26211D]">
       <div className="max-w-[520px] mx-auto px-5 py-6 pb-12 min-h-screen flex flex-col">
-        <header className="flex justify-between items-center mb-8">
-          <div className="font-mono text-[13px] uppercase tracking-[0.1em] text-white/55">Mirror</div>
+        <header className="flex justify-between items-center mb-10">
+          <div className="font-serif text-[20px] tracking-tight text-[#26211D]">Mirror</div>
           {screen !== 'tone' && (
             <button
               onClick={reset}
-              className="font-mono text-[11px] text-white/60 border border-white/15 rounded-full px-3 py-1.5 flex items-center gap-1.5 hover:text-white hover:border-white/30 transition-colors"
+              className="text-[12px] text-[#73685C] border border-[#E8DFD2] rounded-full px-3 py-1.5 flex items-center gap-1.5 hover:bg-[#F2EBDD] transition-colors font-sans"
             >
               <RotateCcw size={11} /> restart
             </button>
@@ -187,13 +188,13 @@ export default function Home() {
         {/* SCREEN: TONE */}
         {screen === 'tone' && (
           <div className="fade-up flex-1 flex flex-col">
-            <div className="mt-6 mb-10">
-              <h1 className="font-serif text-[44px] sm:text-[48px] leading-[1.05] tracking-[-0.02em] m-0 mb-4">
+            <div className="mt-2 mb-10">
+              <h1 className="font-serif text-[44px] sm:text-[52px] leading-[1.04] tracking-[-0.02em] m-0 mb-5 text-[#26211D]">
                 Tell me about your day.
                 <br />
-                <em className="text-white/55">I&apos;ll tell you something true.</em>
+                <em className="text-[#8C7B68] font-normal">I&apos;ll tell you something true.</em>
               </h1>
-              <p className="font-sans text-sm text-white/45 leading-relaxed m-0">
+              <p className="font-sans text-[15px] text-[#73685C] leading-relaxed m-0">
                 Pick a voice. Type your day. Hear yourself, differently.
               </p>
             </div>
@@ -209,13 +210,13 @@ export default function Home() {
                       setTone(tn.id);
                       setScreen('input');
                     }}
-                    className="fade-up bg-white/[0.04] border border-white/10 rounded-2xl p-5 text-left text-white flex items-center gap-4 transition-all hover:bg-white/[0.08] hover:translate-x-1"
-                    style={{ animationDelay: `${i * 80}ms`, borderColor: undefined }}
+                    className="fade-up bg-white border border-[#E8DFD2] rounded-2xl p-5 text-left text-[#26211D] flex items-center gap-4 transition-all hover:-translate-y-0.5 font-sans"
+                    style={{ animationDelay: `${i * 80}ms`, boxShadow: CARD_SHADOW }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = tn.accent;
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = '';
+                      e.currentTarget.style.borderColor = '#E8DFD2';
                     }}
                   >
                     <div
@@ -225,18 +226,20 @@ export default function Home() {
                       <Icon size={22} color="#fff" strokeWidth={2} />
                     </div>
                     <div className="flex-1">
-                      <div className="font-serif text-2xl leading-tight mb-1">{tn.label}</div>
-                      <div className="font-sans text-xs text-white/50">
+                      <div className="font-serif text-[24px] leading-tight mb-1 text-[#26211D]">
+                        {tn.label}
+                      </div>
+                      <div className="text-[12px] text-[#73685C]">
                         {tn.sub} · ages {tn.age}
                       </div>
                     </div>
-                    <ArrowRight size={18} color="rgba(255,255,255,0.3)" />
+                    <ArrowRight size={18} color="#A99B89" />
                   </button>
                 );
               })}
             </div>
 
-            <div className="mt-auto pt-8 font-mono text-[11px] text-white/30">
+            <div className="mt-auto pt-10 text-[12px] text-[#A99B89]">
               30-second read · brutally honest · share-worthy
             </div>
           </div>
@@ -246,14 +249,13 @@ export default function Home() {
         {screen === 'input' && T && (
           <div className="fade-up flex-1 flex flex-col">
             <div className="mb-6">
-              <div
-                className="font-mono text-[11px] uppercase tracking-[0.1em] mb-3"
-                style={{ color: T.accent }}
-              >
-                — {T.label} mode
+              <div className="text-[12px] mb-3 font-sans" style={{ color: T.accent }}>
+                — {T.label.toLowerCase()}
               </div>
-              <h2 className="font-serif text-[32px] leading-tight m-0 mb-3">Type your day.</h2>
-              <p className="font-sans text-[13px] text-white/50 leading-relaxed m-0">
+              <h2 className="font-serif text-[34px] leading-tight m-0 mb-3 text-[#26211D]">
+                Type your day.
+              </h2>
+              <p className="font-sans text-[14px] text-[#73685C] leading-relaxed m-0">
                 Wake time, food, work, screens, sleep. The more honest, the sharper the read.
               </p>
             </div>
@@ -263,17 +265,17 @@ export default function Home() {
               onChange={(e) => setDayInput(e.target.value)}
               placeholder={T.placeholder}
               rows={8}
-              className="w-full bg-white/[0.04] border border-white/10 rounded-2xl p-[18px] text-white text-[16px] leading-relaxed font-sans resize-none outline-none mb-3 transition-colors focus:border-[var(--tone-accent)]"
-              style={{ ['--tone-accent' as never]: T.accent }}
+              className="w-full bg-white border border-[#E8DFD2] rounded-2xl p-[18px] text-[#26211D] placeholder:text-[#A99B89] text-[16px] leading-relaxed font-sans resize-none outline-none mb-3 transition-colors focus:border-[var(--tone-accent)]"
+              style={{ ['--tone-accent' as never]: T.accent, boxShadow: CARD_SHADOW }}
             />
 
-            <div className="font-mono text-[11px] text-white/35 mb-5">
+            <div className="text-[12px] text-[#A99B89] mb-5 font-sans">
               {dayInput.length} chars ·{' '}
               {dayInput.trim().length < MIN_INPUT ? 'give me more to work with' : 'good'}
             </div>
 
             {error && (
-              <div className="text-[13px] mb-3" style={{ color: T.accent }}>
+              <div className="text-[13px] mb-3 font-sans" style={{ color: T.accent }}>
                 {error}
               </div>
             )}
@@ -281,11 +283,8 @@ export default function Home() {
             <button
               onClick={callAI}
               disabled={dayInput.trim().length < MIN_INPUT}
-              className="border-0 px-6 py-4 rounded-[14px] text-base font-semibold flex items-center justify-center gap-2.5 transition-all font-sans disabled:cursor-not-allowed"
-              style={{
-                background: dayInput.trim().length < MIN_INPUT ? 'rgba(255,255,255,0.1)' : T.accent,
-                color: dayInput.trim().length < MIN_INPUT ? 'rgba(255,255,255,0.3)' : '#fff',
-              }}
+              className="border-0 px-6 py-4 rounded-[14px] text-base font-semibold flex items-center justify-center gap-2.5 transition-all font-sans disabled:cursor-not-allowed disabled:opacity-40"
+              style={{ background: T.accent, color: '#fff' }}
             >
               {T.ctaLabel}
               <ArrowRight size={18} />
@@ -305,30 +304,30 @@ export default function Home() {
                 return <Icon size={36} color="#fff" />;
               })()}
             </div>
-            <div className="font-serif text-[32px] leading-tight mb-3">
+            <div className="font-serif text-[32px] leading-tight mb-3 text-[#26211D]">
               {T.loadingMessages[loadingMsgIdx]}…
             </div>
-            <div className="font-mono text-[11px] text-white/40 tracking-[0.1em]">
-              this takes about 10 seconds
-            </div>
+            <div className="text-[12px] text-[#A99B89] font-sans">this takes about 10 seconds</div>
           </div>
         )}
 
         {/* SCREEN: TEASE */}
         {screen === 'tease' && T && (
           <div className="fade-up flex-1 flex flex-col">
-            <div
-              className="font-mono text-[11px] uppercase tracking-[0.1em] mb-4"
-              style={{ color: T.accent }}
-            >
-              — {T.label} · partial
+            <div className="text-[12px] mb-4 font-sans" style={{ color: T.accent }}>
+              — {T.label.toLowerCase()} · partial
             </div>
 
-            <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6 mb-6 relative">
-              <p className="font-serif text-[22px] leading-snug m-0 italic">&ldquo;{teaseText}&rdquo;</p>
+            <div
+              className="bg-white border border-[#E8DFD2] rounded-2xl p-6 mb-6 relative"
+              style={{ boxShadow: CARD_SHADOW }}
+            >
+              <p className="font-serif text-[22px] leading-snug m-0 italic text-[#26211D]">
+                &ldquo;{teaseText}&rdquo;
+              </p>
 
               <div
-                className="mt-5 pt-5 border-t border-dashed border-white/15 select-none pointer-events-none opacity-50 font-serif"
+                className="mt-5 pt-5 border-t border-dashed border-[#E8DFD2] select-none pointer-events-none opacity-60 font-serif text-[#A99B89]"
                 style={{ filter: 'blur(6px)' }}
               >
                 <p className="text-lg leading-relaxed m-0">
@@ -341,20 +340,22 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="rounded-2xl p-5 mb-5" style={{ background: T.accent }}>
-              <div className="font-mono text-[11px] uppercase tracking-[0.1em] opacity-85 mb-2">
-                Unlock the rest
-              </div>
-              <div className="font-serif text-xl leading-snug mb-1">
+            <div
+              className="rounded-2xl p-5 mb-5 text-white"
+              style={{ background: T.accent, boxShadow: CARD_SHADOW }}
+            >
+              <div className="text-[12px] opacity-90 mb-2 font-sans">Unlock the rest</div>
+              <div className="font-serif text-[22px] leading-snug mb-1">
                 See the full read + your 14-day reset plan.
               </div>
-              <div className="font-sans text-[13px] opacity-85">Sent to your WhatsApp. No spam, ever.</div>
+              <div className="font-sans text-[13px] opacity-90">
+                Sent to your WhatsApp. No spam, ever.
+              </div>
             </div>
 
             <button
               onClick={() => setScreen('capture')}
-              className="bg-white text-black border-0 px-6 py-4 rounded-[14px] text-base font-semibold flex items-center justify-center gap-2.5 font-sans hover:bg-white/90 transition-colors"
-              style={{ color: T.bg }}
+              className="bg-[#26211D] text-white border-0 px-6 py-4 rounded-[14px] text-base font-semibold flex items-center justify-center gap-2.5 font-sans hover:bg-black transition-colors"
             >
               <Phone size={18} /> Unlock my full read
             </button>
@@ -365,14 +366,13 @@ export default function Home() {
         {screen === 'capture' && T && (
           <div className="fade-up flex-1 flex flex-col">
             <div className="mb-6">
-              <div
-                className="font-mono text-[11px] uppercase tracking-[0.1em] mb-3"
-                style={{ color: T.accent }}
-              >
-                — One step left
+              <div className="text-[12px] mb-3 font-sans" style={{ color: T.accent }}>
+                — one step left
               </div>
-              <h2 className="font-serif text-[32px] leading-tight m-0 mb-2">Where do I send this?</h2>
-              <p className="font-sans text-[13px] text-white/50 leading-relaxed m-0">
+              <h2 className="font-serif text-[34px] leading-tight m-0 mb-2 text-[#26211D]">
+                Where do I send this?
+              </h2>
+              <p className="font-sans text-[14px] text-[#73685C] leading-relaxed m-0">
                 Your full read + a 14-day reset plan, on WhatsApp.
               </p>
             </div>
@@ -383,18 +383,19 @@ export default function Home() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
                 autoComplete="given-name"
-                className="w-full bg-white/[0.04] border border-white/10 rounded-[14px] p-4 text-white text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
-                style={{ ['--tone-accent' as never]: T.accent }}
+                className="w-full bg-white border border-[#E8DFD2] rounded-[14px] p-4 text-[#26211D] placeholder:text-[#A99B89] text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
+                style={{ ['--tone-accent' as never]: T.accent, boxShadow: CARD_SHADOW }}
               />
               <div className="flex gap-2 w-full">
                 <select
                   value={countryCode}
                   onChange={(e) => setCountryCode(e.target.value)}
                   aria-label="Country code"
-                  className="shrink-0 w-[96px] bg-white/[0.04] border border-white/10 rounded-[14px] py-4 px-2 text-white text-[16px] font-sans outline-none appearance-none text-center"
+                  className="shrink-0 w-[96px] bg-white border border-[#E8DFD2] rounded-[14px] py-4 px-2 text-[#26211D] text-[16px] font-sans outline-none appearance-none text-center"
+                  style={{ boxShadow: CARD_SHADOW }}
                 >
                   {COUNTRY_CODES.map((c) => (
-                    <option key={c.code} value={c.code} className="bg-[#1a1a1a]">
+                    <option key={c.code} value={c.code}>
                       {c.flag} {c.code}
                     </option>
                   ))}
@@ -406,14 +407,14 @@ export default function Home() {
                   type="tel"
                   inputMode="numeric"
                   autoComplete="tel"
-                  className="flex-1 min-w-0 bg-white/[0.04] border border-white/10 rounded-[14px] p-4 text-white text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
-                  style={{ ['--tone-accent' as never]: T.accent }}
+                  className="flex-1 min-w-0 bg-white border border-[#E8DFD2] rounded-[14px] p-4 text-[#26211D] placeholder:text-[#A99B89] text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
+                  style={{ ['--tone-accent' as never]: T.accent, boxShadow: CARD_SHADOW }}
                 />
               </div>
             </div>
 
             {error && (
-              <div className="text-[13px] mb-3" style={{ color: T.accent }}>
+              <div className="text-[13px] mb-3 font-sans" style={{ color: T.accent }}>
                 {error}
               </div>
             )}
@@ -426,7 +427,7 @@ export default function Home() {
             >
               <Send size={18} /> {submitting ? 'Sending…' : 'Send me my full read'}
             </button>
-            <div className="font-mono text-[10px] text-white/35 text-center">
+            <div className="text-[11px] text-[#A99B89] text-center font-sans">
               we&apos;ll never spam · we&apos;ll never share your number
             </div>
           </div>
@@ -435,15 +436,17 @@ export default function Home() {
         {/* SCREEN: RESULT */}
         {screen === 'result' && T && aiResponse && (
           <div className="fade-up flex-1 flex flex-col">
-            <div
-              className="font-mono text-[11px] uppercase tracking-[0.1em] mb-4"
-              style={{ color: T.accent }}
-            >
-              — {T.label} · full read
+            <div className="text-[12px] mb-4 font-sans" style={{ color: T.accent }}>
+              — {T.label.toLowerCase()} · full read
             </div>
 
-            <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6 mb-4">
-              <p className="font-serif text-lg leading-relaxed m-0 whitespace-pre-wrap">{body}</p>
+            <div
+              className="bg-white border border-[#E8DFD2] rounded-2xl p-6 mb-5"
+              style={{ boxShadow: CARD_SHADOW }}
+            >
+              <p className="font-serif text-[18px] leading-relaxed m-0 whitespace-pre-wrap text-[#26211D]">
+                {body}
+              </p>
               {fix && (
                 <p
                   className="font-serif text-[17px] leading-snug mt-5 pt-5 font-medium"
@@ -454,27 +457,27 @@ export default function Home() {
               )}
             </div>
 
-            <div className="font-mono text-[11px] text-white/50 uppercase tracking-[0.1em] mb-2">
-              ↓ your share card
-            </div>
+            <div className="text-[11px] text-[#A99B89] mb-2 font-sans">↓ your share card</div>
             <div
               ref={cardRef}
-              className="rounded-[20px] p-7 mb-6 relative overflow-hidden flex flex-col justify-between"
-              style={{ background: T.cardBg, aspectRatio: '1 / 1' }}
+              className="rounded-[20px] p-7 mb-6 relative overflow-hidden flex flex-col justify-between text-white"
+              style={{ background: T.cardBg, aspectRatio: '1 / 1', boxShadow: CARD_SHADOW }}
             >
               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
 
-              <div className="font-mono text-[11px] tracking-[0.15em] opacity-70 uppercase relative z-10">
+              <div className="text-[12px] tracking-[0.05em] opacity-80 relative z-10 font-sans">
                 Mirror · {T.label}
               </div>
 
               <div className="relative z-10">
-                <p className="font-serif text-2xl leading-snug m-0 italic">&ldquo;{punchLine}&rdquo;</p>
+                <p className="font-serif text-2xl leading-snug m-0 italic">
+                  &ldquo;{punchLine}&rdquo;
+                </p>
               </div>
 
-              <div className="relative z-10 flex justify-between items-end">
-                <div className="font-mono text-[10px] opacity-70 tracking-[0.1em]">— {name || 'anonymous'}</div>
-                <div className="font-mono text-[10px] opacity-70 tracking-[0.1em]">mirror.app</div>
+              <div className="relative z-10 flex justify-between items-end font-sans text-[11px] opacity-80">
+                <div>— {name || 'anonymous'}</div>
+                <div>mirror.app</div>
               </div>
             </div>
 
@@ -495,6 +498,7 @@ export default function Home() {
                   window.open(`https://wa.me/?text=${msg}`, '_blank');
                 }}
                 className="bg-[#25D366] text-white border-0 px-5 py-3.5 rounded-[14px] text-[15px] font-semibold flex items-center justify-center gap-2.5 font-sans"
+                style={{ boxShadow: CARD_SHADOW }}
               >
                 <MessageCircle size={18} /> Send to a friend who needs it more
               </button>
@@ -510,16 +514,17 @@ export default function Home() {
                     void navigator.clipboard.writeText(`"${punchLine}" — try Mirror: ${url}`);
                   }
                 }}
-                className="bg-white/[0.08] text-white border border-white/15 px-5 py-3.5 rounded-[14px] text-[15px] font-medium flex items-center justify-center gap-2.5 font-sans"
+                className="bg-white text-[#26211D] border border-[#E8DFD2] px-5 py-3.5 rounded-[14px] text-[15px] font-medium flex items-center justify-center gap-2.5 font-sans"
+                style={{ boxShadow: CARD_SHADOW }}
               >
                 <Share2 size={18} /> Share my read
               </button>
             </div>
 
-            <div className="mt-6 p-4 bg-white/[0.04] border border-dashed border-white/15 rounded-xl text-xs text-white/55 leading-relaxed font-sans">
-              <strong className="text-white">What happens next:</strong> a WhatsApp message lands on{' '}
-              {countryCode} {phone}. Day 1 of your 14-day reset starts tomorrow morning — designed by India&apos;s
-              most-followed wellness teacher. No cost, no app to download.
+            <div className="mt-6 p-4 bg-[#F2EBDD] border border-dashed border-[#E8DFD2] rounded-xl text-[12px] text-[#73685C] leading-relaxed font-sans">
+              <strong className="text-[#26211D]">What happens next:</strong> a WhatsApp message
+              lands on {countryCode} {phone}. Day 1 of your 14-day reset starts tomorrow morning —
+              designed by India&apos;s most-followed wellness teacher. No cost, no app to download.
             </div>
           </div>
         )}

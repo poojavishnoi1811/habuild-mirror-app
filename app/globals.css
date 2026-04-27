@@ -10,15 +10,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Prevent iOS Safari from zooming on input focus. Inputs use 16px+ font already; this is the second line of defence. */
+/* Prevent iOS Safari zooming on input focus. Inputs use 16px+ already; this is the second line of defence. */
 input, textarea, select { font-size: 16px; }
 
 @layer utilities {
-  .grain {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    mix-blend-mode: overlay;
-    opacity: 0.06;
-  }
   .fade-up { animation: fade-up 600ms cubic-bezier(0.16, 1, 0.3, 1) both; }
   .pulse-soft { animation: pulse-soft 1.5s ease-in-out infinite; }
 }
