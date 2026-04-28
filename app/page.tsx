@@ -563,10 +563,9 @@ export default function Home() {
             </div>
 
             <div className="mt-6 p-4 bg-[#F2EBDD] border border-dashed border-[#E8DFD2] rounded-xl text-[12px] text-[#73685C] leading-relaxed font-sans">
-              <strong className="text-[#26211D]">What happens next:</strong> your gift just landed
-              on {countryCode} {phone} — open it above to see what&apos;s inside. A real morning
-              practice, designed by India&apos;s most-followed wellness teacher. No cost, no app to
-              download.
+              <strong className="text-[#26211D]">What happens next:</strong> your gift is right
+              above ↑ — tap to open. A real morning practice, designed by India&apos;s
+              most-followed wellness teacher. No cost, no app to download.
             </div>
           </div>
         )}

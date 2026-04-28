@@ -134,13 +134,13 @@ Use these when in doubt.
 - [x] Supabase project created (ref `hjzgcjegpsqdjhvzitvo`, schema + RLS applied)
 - [x] Vercel + GitHub repo connected — live at https://habuild-kkd-mirror.vercel.app/
 - [ ] Domain registered
-- [x] WhatsApp provider decision — Wati (Habuild's existing account); awaiting API token + template approvals
+- [x] WhatsApp delivery — handed off to Habuild's existing habit.yoga flow; no provider integration needed on our side
 - [x] System prompts v1 drafted (`lib/prompts.ts`, JSON output, voice ported from POC)
 - [ ] 50 test inputs collected for prompt iteration
 - [ ] Distribution prep (Person 6) — Reddit drafts, creator DM list, LinkedIn templates
 
 **Blocked on:**
-- Wati API token + template approvals (you submit templates in Wati dashboard, Meta approves in 1–24hr)
+- Nothing (WhatsApp is now handed off to habit.yoga's existing flow)
 
 **Done:**
 - Project brief locked
