@@ -106,3 +106,16 @@ create policy "anon_insert_share_events"
   with check (true);
 
 -- message_deliveries: no anon policy → blocks browser access. Service role bypasses RLS.
+
+-- =========================================================================
+-- Migrations — run on existing databases to bring them up to date.
+-- Idempotent; safe to re-run.
+-- =========================================================================
+
+-- Allow same phone to re-run the flow (drop the original UNIQUE index,
+-- recreate it as a regular non-unique index so phone lookups stay fast).
+drop index if exists idx_leads_full_phone;
+create index if not exists idx_leads_full_phone on leads(full_phone);
+
+-- Track gift-claim clicks.
+alter table leads add column if not exists claim_clicked_at timestamptz;
