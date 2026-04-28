@@ -476,6 +476,21 @@ export default function Home() {
                     '/landing-toddler.jpg',
                     '/landing-stroke.jpg',
                     '/landing-popeyes.jpg',
+                    '/share-meme-1.jpg',
+                    '/share-meme-2.jpg',
+                    '/share-meme-3.jpg',
+                    '/share-meme-4.jpg',
+                    '/share-meme-5.jpg',
+                    '/share-meme-6.jpg',
+                    '/share-meme-7.jpg',
+                    '/share-meme-8.jpg',
+                    '/share-meme-9.jpg',
+                    '/share-meme-10.jpg',
+                    '/share-meme-11.jpg',
+                    '/share-meme-12.jpg',
+                    '/share-meme-13.jpg',
+                    '/share-meme-14.jpg',
+                    '/share-meme-15.jpg',
                   ];
                   const idx = leadId
                     ? leadId.charCodeAt(leadId.length - 1) % memes.length
