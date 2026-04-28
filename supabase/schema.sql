@@ -32,7 +32,7 @@ create table if not exists leads (
   utm_source text,
   utm_medium text,
   utm_campaign text,
-  referrer_lead_id uuid references leads(id),
+  referrer_lead_id uuid references leads(id) on delete set null,
 
   -- Engagement
   share_count int default 0,
@@ -53,7 +53,7 @@ create index if not exists idx_leads_full_phone on leads(full_phone);
 create table if not exists share_events (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz default now(),
-  lead_id uuid references leads(id) not null,
+  lead_id uuid references leads(id) on delete cascade not null,
   channel text not null,
   user_agent text
 );
@@ -64,7 +64,7 @@ create index if not exists idx_share_events_created on share_events(created_at d
 create table if not exists message_deliveries (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz default now(),
-  lead_id uuid references leads(id) not null,
+  lead_id uuid references leads(id) on delete cascade not null,
   message_type text not null,
   provider text not null,
   provider_message_id text,
@@ -119,3 +119,24 @@ create index if not exists idx_leads_full_phone on leads(full_phone);
 
 -- Track gift-claim clicks.
 alter table leads add column if not exists claim_clicked_at timestamptz;
+
+-- Cascade deletes from leads → share_events / message_deliveries so a row
+-- can actually be removed via the dashboard. Self-reference on
+-- referrer_lead_id nulls out instead of cascading the lineage.
+alter table share_events
+  drop constraint if exists share_events_lead_id_fkey;
+alter table share_events
+  add constraint share_events_lead_id_fkey
+    foreign key (lead_id) references leads(id) on delete cascade;
+
+alter table message_deliveries
+  drop constraint if exists message_deliveries_lead_id_fkey;
+alter table message_deliveries
+  add constraint message_deliveries_lead_id_fkey
+    foreign key (lead_id) references leads(id) on delete cascade;
+
+alter table leads
+  drop constraint if exists leads_referrer_lead_id_fkey;
+alter table leads
+  add constraint leads_referrer_lead_id_fkey
+    foreign key (referrer_lead_id) references leads(id) on delete set null;
