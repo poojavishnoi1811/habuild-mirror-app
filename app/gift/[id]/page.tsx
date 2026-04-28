@@ -10,8 +10,7 @@ const isUuid = (v: string): boolean =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 
 export default async function GiftPage({ params }: Props) {
-  const challengeUrl =
-    process.env.NEXT_PUBLIC_HABUILD_CHALLENGE_URL ?? 'https://habuild.in/14-day-challenge';
+  const challengeUrl = process.env.NEXT_PUBLIC_HABUILD_CHALLENGE_URL ?? 'https://habit.yoga/';
 
   let tone: ToneId = 'mirror';
   let firstName: string | null = null;
