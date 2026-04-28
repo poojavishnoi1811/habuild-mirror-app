@@ -46,7 +46,7 @@ export default async function Database() {
         .from('leads')
         .select('id, created_at, name, phone, country_code')
         .order('created_at', { ascending: false })
-        .limit(100)
+        .limit(500)
         .returns<LatestLead[]>(),
     ]);
 
@@ -63,7 +63,17 @@ export default async function Database() {
   ).size;
   const intlSignups = distinctSignups - indiaSignups;
   const intlPct = distinctSignups > 0 ? Math.round((intlSignups / distinctSignups) * 100) : 0;
-  const recent = latest ?? [];
+
+  // Dedupe by phone, keep the most recent entry per number, cap at 100.
+  const seen = new Set<string>();
+  const recent: LatestLead[] = [];
+  for (const l of latest ?? []) {
+    const key = l.country_code + l.phone;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    recent.push(l);
+    if (recent.length >= 100) break;
+  }
 
   return (
     <div className="min-h-screen bg-[#FAF7F0] text-[#26211D]">
@@ -119,10 +129,10 @@ export default async function Database() {
             >
               <div className="flex justify-between items-center px-5 py-3 border-b border-[#F2EBDD]">
                 <div className="text-[12px] uppercase tracking-wider text-[#73685C] font-sans">
-                  recent signups
+                  recent signups (distinct)
                 </div>
                 <div className="text-[11px] text-[#A99B89] font-sans">
-                  showing {fmt(recent.length)} of {fmt(totalLeads)}
+                  showing {fmt(recent.length)} of {fmt(distinctSignups)}
                 </div>
               </div>
               <div className="overflow-x-auto">
