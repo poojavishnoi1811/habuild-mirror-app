@@ -140,11 +140,7 @@ export default function Home() {
 
     if (dbError) {
       console.error('[capture] insert failed:', dbError);
-      if (dbError.code === '23505') {
-        setError("This number's already in. Check your WhatsApp.");
-      } else {
-        setError('Something went wrong saving. Try again.');
-      }
+      setError('Something went wrong saving. Try again.');
       return;
     }
 
@@ -515,6 +511,15 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col gap-2">
+              {leadId && (
+                <a
+                  href={`/gift/${leadId}`}
+                  className="text-white border-0 px-5 py-4 rounded-full text-[15px] font-medium flex items-center justify-center gap-2.5 font-sans no-underline"
+                  style={{ background: T.accent, boxShadow: CARD_SHADOW }}
+                >
+                  Open your gift →
+                </a>
+              )}
               <button
                 onClick={() => {
                   const verb =
@@ -558,9 +563,10 @@ export default function Home() {
             </div>
 
             <div className="mt-6 p-4 bg-[#F2EBDD] border border-dashed border-[#E8DFD2] rounded-xl text-[12px] text-[#73685C] leading-relaxed font-sans">
-              <strong className="text-[#26211D]">What happens next:</strong> a WhatsApp message
-              lands on {countryCode} {phone}. Day 1 of your 14-day reset starts tomorrow morning —
-              designed by India&apos;s most-followed wellness teacher. No cost, no app to download.
+              <strong className="text-[#26211D]">What happens next:</strong> your gift just landed
+              on {countryCode} {phone} — open it above to see what&apos;s inside. A real morning
+              practice, designed by India&apos;s most-followed wellness teacher. No cost, no app to
+              download.
             </div>
           </div>
         )}

@@ -47,7 +47,7 @@ create index if not exists idx_leads_created on leads(created_at desc);
 create index if not exists idx_leads_tone on leads(tone);
 create index if not exists idx_leads_country on leads(country_code);
 create index if not exists idx_leads_source on leads(source);
-create unique index if not exists idx_leads_full_phone on leads(full_phone);
+create index if not exists idx_leads_full_phone on leads(full_phone);
 
 create table if not exists share_events (
   id uuid primary key default gen_random_uuid(),
