@@ -516,9 +516,28 @@ export default function Home() {
                 </a>
               )}
               <button
-                onClick={() => {
+                onClick={async () => {
                   const origin = window.location.origin;
                   const url = leadId ? `${origin}/r/${leadId}` : origin;
+                  const text = `"${punchLine}" — try Mirror: ${url}`;
+
+                  if (leadId && typeof navigator !== 'undefined' && 'canShare' in navigator) {
+                    try {
+                      const res = await fetch(`/api/og?id=${leadId}`);
+                      if (res.ok) {
+                        const blob = await res.blob();
+                        const file = new File([blob], 'mirror.png', { type: 'image/png' });
+                        if (navigator.canShare({ files: [file] })) {
+                          trackShare('native_share');
+                          await navigator.share({ files: [file], text });
+                          return;
+                        }
+                      }
+                    } catch {
+                      // fall through
+                    }
+                  }
+
                   if (navigator.share) {
                     trackShare('native_share');
                     void navigator.share({ title: 'Mirror', text: punchLine, url });
@@ -526,7 +545,7 @@ export default function Home() {
                   }
                   if (navigator.clipboard) {
                     trackShare('copy_link');
-                    void navigator.clipboard.writeText(`"${punchLine}" — try Mirror: ${url}`);
+                    void navigator.clipboard.writeText(text);
                   }
                 }}
                 className="bg-white text-[#26211D] border border-[#E8DFD2] px-5 py-3.5 rounded-full text-[15px] font-medium flex items-center justify-center gap-2.5 font-sans"
