@@ -55,7 +55,6 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [leadId, setLeadId] = useState<string | null>(null);
-  const [landingMeme, setLandingMeme] = useState<string | null>(null);
   const [utm, setUtm] = useState<Utm>({});
   const [referrerLeadId, setReferrerLeadId] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -71,9 +70,6 @@ export default function Home() {
       campaign: sp.get('utm_campaign') ?? undefined,
     });
     setReferrerLeadId(sp.get('ref'));
-
-    const memes = ['/landing-kitten.jpg', '/landing-toddler.jpg', '/landing-stroke.jpg'];
-    setLandingMeme(memes[Math.floor(Math.random() * memes.length)]);
   }, []);
 
   useEffect(() => {
@@ -269,21 +265,19 @@ export default function Home() {
               </div>
             </div>
 
-            {landingMeme && (
-              <div className="flex justify-center mb-5">
-                <img
-                  src={landingMeme}
-                  alt="meme"
-                  className="rounded-2xl block"
-                  style={{
-                    maxWidth: 200,
-                    width: '100%',
-                    height: 'auto',
-                    boxShadow: CARD_SHADOW,
-                  }}
-                />
-              </div>
-            )}
+            <div className="flex justify-center mb-5">
+              <img
+                src="/landing-kitten.jpg"
+                alt="So... tell me about your day"
+                className="rounded-2xl block"
+                style={{
+                  maxWidth: 200,
+                  width: '100%',
+                  height: 'auto',
+                  boxShadow: CARD_SHADOW,
+                }}
+              />
+            </div>
 
             {error && (
               <div className="text-[13px] mb-3 font-sans" style={{ color: '#DC2626' }}>
@@ -467,14 +461,45 @@ export default function Home() {
               className="rounded-[20px] p-7 mb-6 relative overflow-hidden flex flex-col justify-between text-white"
               style={{ background: T.cardBg, aspectRatio: '1 / 1', boxShadow: CARD_SHADOW }}
             >
-              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
+              {(() => {
+                const memes = [
+                  '/landing-kitten.jpg',
+                  '/landing-toddler.jpg',
+                  '/landing-stroke.jpg',
+                ];
+                const idx = leadId
+                  ? leadId.charCodeAt(leadId.length - 1) % memes.length
+                  : 0;
+                return (
+                  <div
+                    className="absolute z-10"
+                    style={{
+                      top: 18,
+                      right: 18,
+                      width: 110,
+                      height: 130,
+                      transform: 'rotate(4deg)',
+                      boxShadow: '0 6px 18px rgba(0,0,0,0.22)',
+                      borderRadius: 12,
+                      overflow: 'hidden',
+                      border: '4px solid white',
+                    }}
+                  >
+                    <img
+                      src={memes[idx]}
+                      alt=""
+                      className="w-full h-full object-cover block"
+                    />
+                  </div>
+                );
+              })()}
 
               <div className="text-[12px] tracking-[0.05em] opacity-80 relative z-10 font-sans">
                 Mirror · {T.label}
               </div>
 
               <div className="relative z-10">
-                <p className="font-serif text-2xl leading-snug m-0 italic">
+                <p className="font-serif text-2xl leading-snug m-0 italic max-w-[78%]">
                   &ldquo;{punchLine}&rdquo;
                 </p>
               </div>
