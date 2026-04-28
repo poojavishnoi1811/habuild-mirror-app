@@ -461,47 +461,34 @@ export default function Home() {
               className="rounded-[20px] p-7 mb-6 relative overflow-hidden flex flex-col justify-between text-white"
               style={{ background: T.cardBg, aspectRatio: '1 / 1', boxShadow: CARD_SHADOW }}
             >
-              {(() => {
-                const memes = [
-                  '/landing-kitten.jpg',
-                  '/landing-toddler.jpg',
-                  '/landing-stroke.jpg',
-                ];
-                const idx = leadId
-                  ? leadId.charCodeAt(leadId.length - 1) % memes.length
-                  : 0;
-                return (
-                  <div
-                    className="absolute z-10"
-                    style={{
-                      top: 18,
-                      right: 18,
-                      width: 110,
-                      height: 130,
-                      transform: 'rotate(4deg)',
-                      boxShadow: '0 6px 18px rgba(0,0,0,0.22)',
-                      borderRadius: 12,
-                      overflow: 'hidden',
-                      border: '4px solid white',
-                    }}
-                  >
-                    <img
-                      src={memes[idx]}
-                      alt=""
-                      className="w-full h-full object-cover block"
-                    />
-                  </div>
-                );
-              })()}
+              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
 
               <div className="text-[12px] tracking-[0.05em] opacity-80 relative z-10 font-sans">
                 Mirror · {T.label}
               </div>
 
               <div className="relative z-10">
-                <p className="font-serif text-2xl leading-snug m-0 italic max-w-[78%]">
+                <p className="font-serif text-2xl leading-snug m-0 italic mb-4">
                   &ldquo;{punchLine}&rdquo;
                 </p>
+                {(() => {
+                  const memes = [
+                    '/landing-kitten.jpg',
+                    '/landing-toddler.jpg',
+                    '/landing-stroke.jpg',
+                  ];
+                  const idx = leadId
+                    ? leadId.charCodeAt(leadId.length - 1) % memes.length
+                    : 0;
+                  return (
+                    <img
+                      src={memes[idx]}
+                      alt=""
+                      className="rounded-xl block"
+                      style={{ width: 170, height: 'auto', objectFit: 'cover' }}
+                    />
+                  );
+                })()}
               </div>
 
               <div className="relative z-10 flex justify-between items-end font-sans text-[11px] opacity-80">
