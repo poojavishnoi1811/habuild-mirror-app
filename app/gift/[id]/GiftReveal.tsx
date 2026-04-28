@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 import { TONES, type ToneId } from '@/lib/tones';
 
 type Props = {
@@ -12,7 +14,16 @@ type Props = {
 
 export default function GiftReveal({ tone, firstName, challengeUrl, leadId }: Props) {
   const [flipped, setFlipped] = useState(false);
+  const router = useRouter();
   const t = TONES[tone];
+
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  };
 
   const greeting = firstName ?? null;
 
@@ -30,7 +41,14 @@ export default function GiftReveal({ tone, firstName, challengeUrl, leadId }: Pr
 
   return (
     <div className="min-h-screen bg-[#FAF7F0] text-[#26211D] flex items-center justify-center px-5 py-10">
-      <div className="w-full max-w-[420px] flex flex-col items-center">
+      <div className="w-full max-w-[420px] flex flex-col items-center relative">
+        <button
+          onClick={handleBack}
+          aria-label="Go back"
+          className="absolute left-0 top-0 text-[12px] text-[#73685C] border border-[#E8DFD2] rounded-full pl-2.5 pr-3 py-1.5 flex items-center gap-1.5 hover:bg-white transition-colors font-sans"
+        >
+          <ArrowLeft size={14} /> back
+        </button>
         <div className="text-[12px] uppercase tracking-[0.2em] text-[#A99B89] font-sans mb-6">
           a gift, for showing up
         </div>

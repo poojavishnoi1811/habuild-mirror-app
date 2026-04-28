@@ -108,8 +108,16 @@ export default function Home() {
   };
 
   const handleSubmitInfo = async () => {
-    if (!name.trim() || phone.length < 7 || !tone || !aiResponse) {
-      setError('Need your name and a real phone number.');
+    const phoneOk =
+      countryCode === '+91'
+        ? phone.length === 10
+        : phone.length >= 7 && phone.length <= 12;
+    if (!name.trim() || !phoneOk || !tone || !aiResponse) {
+      setError(
+        countryCode === '+91'
+          ? 'Need your name and a 10-digit phone number.'
+          : 'Need your name and a real phone number (7–12 digits).',
+      );
       return;
     }
     setError(null);
@@ -426,7 +434,12 @@ export default function Home() {
                 </select>
                 <input
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, '');
+                    const max = countryCode === '+91' ? 10 : 12;
+                    setPhone(digits.slice(0, max));
+                  }}
+                  maxLength={countryCode === '+91' ? 10 : 12}
                   placeholder="Phone number"
                   type="tel"
                   inputMode="numeric"
