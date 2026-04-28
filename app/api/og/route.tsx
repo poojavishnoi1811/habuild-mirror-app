@@ -4,6 +4,27 @@ import { serverClient } from '@/lib/supabase';
 
 export const runtime = 'edge';
 
+const SHARE_MEMES = [
+  '/landing-toddler.jpg',
+  '/landing-stroke.jpg',
+  '/landing-popeyes.jpg',
+  '/share-meme-1.jpg',
+  '/share-meme-2.jpg',
+  '/share-meme-3.jpg',
+  '/share-meme-4.jpg',
+  '/share-meme-5.jpg',
+  '/share-meme-6.jpg',
+  '/share-meme-7.jpg',
+  '/share-meme-8.jpg',
+  '/share-meme-9.jpg',
+  '/share-meme-10.jpg',
+  '/share-meme-11.jpg',
+  '/share-meme-12.jpg',
+  '/share-meme-13.jpg',
+  '/share-meme-14.jpg',
+  '/share-meme-15.jpg',
+];
+
 const FALLBACK = {
   tone: 'mirror' as ToneId,
   name: '',
@@ -61,6 +82,11 @@ export async function GET(request: Request) {
   const fontData = await fetch(new URL('/fonts/Newsreader-Italic.woff', request.url)).then(
     (r) => r.arrayBuffer(),
   );
+
+  const memePath = id
+    ? SHARE_MEMES[id.charCodeAt(id.length - 1) % SHARE_MEMES.length]
+    : null;
+  const memeUrl = memePath ? new URL(memePath, request.url).toString() : null;
 
   return new ImageResponse(
     (
@@ -120,7 +146,8 @@ export async function GET(request: Request) {
           style={{
             flex: 1,
             display: 'flex',
-            alignItems: 'center',
+            flexDirection: 'column',
+            justifyContent: 'center',
           }}
         >
           <div
@@ -134,6 +161,22 @@ export async function GET(request: Request) {
           >
             “{punchy}”
           </div>
+          {memeUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={memeUrl}
+              alt=""
+              width={340}
+              height={340}
+              style={{
+                width: 340,
+                height: 340,
+                objectFit: 'cover',
+                borderRadius: 28,
+                marginTop: 48,
+              }}
+            />
+          )}
         </div>
 
         <div
