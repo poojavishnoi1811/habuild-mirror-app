@@ -64,7 +64,7 @@ const parseAIResponse = (raw: string): AIResponse | null => {
 };
 
 type ProviderResult =
-  | { ok: true; raw: string }
+  | { ok: true; raw: string; debug: string }
   | { ok: false; status: number; message: string };
 
 const callProvider = async (
@@ -82,6 +82,7 @@ const callProvider = async (
 
   const models = [primaryModel, ...FALLBACK_MODELS.filter((m) => m !== primaryModel)];
 
+  const t0 = Date.now();
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
@@ -101,6 +102,7 @@ const callProvider = async (
     }),
     signal,
   });
+  const t1 = Date.now();
 
   if (!response.ok) {
     const text = await response.text().catch(() => '');
@@ -111,12 +113,18 @@ const callProvider = async (
     };
   }
 
-  const data = (await response.json()) as ChatCompletionResponse;
+  const data = (await response.json()) as ChatCompletionResponse & {
+    model?: string;
+    usage?: { completion_tokens?: number; prompt_tokens?: number };
+  };
+  const t2 = Date.now();
   const raw = data.choices?.[0]?.message?.content ?? '';
+  const debug = `model=${data.model ?? '?'} fetch=${t1 - t0}ms parse=${t2 - t1}ms tokens_out=${data.usage?.completion_tokens ?? '?'}`;
+  console.log(`[api/generate] ${debug}`);
   if (!raw) {
     return { ok: false, status: 502, message: 'Empty response from provider' };
   }
-  return { ok: true, raw };
+  return { ok: true, raw, debug };
 };
 
 export async function POST(req: Request) {
@@ -159,7 +167,12 @@ export async function POST(req: Request) {
       );
     }
     const parsed = parseAIResponse(first.raw);
-    if (parsed) return NextResponse.json(parsed, { status: 200 });
+    if (parsed) {
+      return NextResponse.json(parsed, {
+        status: 200,
+        headers: { 'x-mirror-debug': first.debug },
+      });
+    }
 
     console.warn('[api/generate] first parse failed, retrying. raw:', first.raw.slice(0, 200));
     const retry = await callProvider(
