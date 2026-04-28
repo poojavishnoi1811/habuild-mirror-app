@@ -5,13 +5,11 @@ import {
   Flame,
   Sparkles,
   Heart,
-  Send,
   Phone,
   ArrowRight,
   ArrowLeft,
   Share2,
   RotateCcw,
-  MessageCircle,
   type LucideIcon,
 } from 'lucide-react';
 import { TONES, TONE_IDS, type IconKey, type ToneId } from '@/lib/tones';
@@ -377,11 +375,8 @@ export default function Home() {
               style={{ background: T.accent, boxShadow: CARD_SHADOW }}
             >
               <div className="text-[12px] opacity-90 mb-2 font-sans uppercase tracking-wider">Unlock the rest</div>
-              <div className="font-sans font-medium text-[20px] leading-snug mb-1">
-                See the full read + your 14-day reset plan.
-              </div>
-              <div className="font-sans text-[13px] opacity-90">
-                Sent to your WhatsApp. No spam, ever.
+              <div className="font-sans font-medium text-[20px] leading-snug">
+                See your full read + claim your gift.
               </div>
             </div>
 
@@ -401,12 +396,9 @@ export default function Home() {
               <div className="text-[12px] mb-3 font-sans" style={{ color: T.accent }}>
                 — one step left
               </div>
-              <h2 className="font-sans font-medium text-[30px] leading-[1.12] tracking-tight m-0 mb-2 text-[#26211D]">
-                Where do I send this?
+              <h2 className="font-sans font-medium text-[30px] leading-[1.12] tracking-tight m-0 text-[#26211D]">
+                Almost there.
               </h2>
-              <p className="font-sans text-[14px] text-[#73685C] leading-relaxed m-0">
-                Your full read + a 14-day reset plan, on WhatsApp.
-              </p>
             </div>
 
             <div className="flex flex-col gap-3 mb-4">
@@ -457,10 +449,10 @@ export default function Home() {
               className="border-0 px-6 py-4 rounded-full text-base font-semibold flex items-center justify-center gap-2.5 font-sans mb-3 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ background: T.accent, color: '#fff' }}
             >
-              <Send size={18} /> {submitting ? 'Sending…' : 'Send me my full read'}
+              <ArrowRight size={18} /> {submitting ? 'Unlocking…' : 'Show me my full read'}
             </button>
             <div className="text-[11px] text-[#A99B89] text-center font-sans">
-              we&apos;ll never spam · we&apos;ll never share your number
+              we won&apos;t share your number
             </div>
           </div>
         )}
@@ -525,27 +517,6 @@ export default function Home() {
               )}
               <button
                 onClick={() => {
-                  const verb =
-                    tone === 'roast'
-                      ? 'roasted me'
-                      : tone === 'mirror'
-                      ? 'saw through me'
-                      : 'destroyed me politely (in maa voice)';
-                  const origin = window.location.origin;
-                  const link = leadId ? `${origin}/r/${leadId}` : origin;
-                  const msg = encodeURIComponent(
-                    `bro this AI just ${verb} and honestly i think you need this more than i did. try it: ${link}`,
-                  );
-                  trackShare('whatsapp');
-                  window.open(`https://wa.me/?text=${msg}`, '_blank');
-                }}
-                className="bg-[#25D366] text-white border-0 px-5 py-3.5 rounded-full text-[15px] font-semibold flex items-center justify-center gap-2.5 font-sans"
-                style={{ boxShadow: CARD_SHADOW }}
-              >
-                <MessageCircle size={18} /> Send to a friend who needs it more
-              </button>
-              <button
-                onClick={() => {
                   const origin = window.location.origin;
                   const url = leadId ? `${origin}/r/${leadId}` : origin;
                   if (navigator.share) {
@@ -566,9 +537,8 @@ export default function Home() {
             </div>
 
             <div className="mt-6 p-4 bg-[#F2EBDD] border border-dashed border-[#E8DFD2] rounded-xl text-[12px] text-[#73685C] leading-relaxed font-sans">
-              <strong className="text-[#26211D]">What happens next:</strong> your gift is right
-              above ↑ — tap to open. A real morning practice, designed by India&apos;s
-              most-followed wellness teacher. No cost, no app to download.
+              A real morning practice, designed by India&apos;s most-followed wellness teacher. No
+              cost, no app to download.
             </div>
           </div>
         )}
