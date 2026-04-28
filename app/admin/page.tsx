@@ -14,7 +14,7 @@ type LeadRow = {
   phone: string;
   country_code: string;
   tone: string;
-  whatsapp_status: string | null;
+  claim_clicked_at: string | null;
   source: string | null;
   utm_source: string | null;
   share_count: number | null;
@@ -87,7 +87,7 @@ export default async function Admin({ searchParams }: Props) {
     supa
       .from('leads')
       .select(
-        'id, created_at, name, phone, country_code, tone, whatsapp_status, source, utm_source, share_count',
+        'id, created_at, name, phone, country_code, tone, claim_clicked_at, source, utm_source, share_count',
       )
       .order('created_at', { ascending: false })
       .limit(200)
@@ -113,12 +113,12 @@ export default async function Admin({ searchParams }: Props) {
           <Stat label="last hour" value={`+${fmt(lastHour ?? 0)}`} />
           <Stat label="intl in view" value={fmt(intlCount)} />
           <Stat
-            label="ai response avg"
+            label="claim rate"
             value={
               recent.length > 0
-                ? `${(recent.filter((l) => l.whatsapp_status === 'sent').length /
+                ? `${(recent.filter((l) => l.claim_clicked_at).length /
                     Math.max(recent.length, 1) *
-                    100).toFixed(0)}% delivered`
+                    100).toFixed(0)}% claimed`
                 : '—'
             }
           />
@@ -136,7 +136,7 @@ export default async function Admin({ searchParams }: Props) {
                   <Th>name</Th>
                   <Th>phone</Th>
                   <Th>tone</Th>
-                  <Th>WA</Th>
+                  <Th>claim</Th>
                   <Th>source</Th>
                   <Th>shares</Th>
                 </tr>
@@ -154,7 +154,7 @@ export default async function Admin({ searchParams }: Props) {
                       <ToneTag tone={l.tone} />
                     </Td>
                     <Td>
-                      <StatusTag status={l.whatsapp_status} />
+                      <ClaimTag claimedAt={l.claim_clicked_at} />
                     </Td>
                     <Td className="text-[#73685C]">{l.utm_source ?? l.source ?? '—'}</Td>
                     <Td className="text-[#73685C]">{l.share_count ?? 0}</Td>
@@ -206,21 +206,23 @@ function ToneTag({ tone }: { tone: string }) {
   );
 }
 
-function StatusTag({ status }: { status: string | null }) {
-  const s = status ?? 'pending';
-  const colors: Record<string, string> = {
-    pending: '#A99B89',
-    sent: '#73685C',
-    delivered: '#16A34A',
-    failed: '#DC2626',
-    skipped: '#A99B89',
-  };
+function ClaimTag({ claimedAt }: { claimedAt: string | null }) {
+  if (!claimedAt) {
+    return (
+      <span
+        className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"
+        style={{ background: '#F2EBDD', color: '#A99B89' }}
+      >
+        —
+      </span>
+    );
+  }
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"
-      style={{ background: '#F2EBDD', color: colors[s] ?? '#73685C' }}
+      className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium text-white"
+      style={{ background: '#16A34A' }}
     >
-      {s}
+      claimed
     </span>
   );
 }

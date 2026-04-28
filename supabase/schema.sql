@@ -37,6 +37,7 @@ create table if not exists leads (
   -- Engagement
   share_count int default 0,
   result_viewed_at timestamptz,
+  claim_clicked_at timestamptz,
 
   -- Spam / dedup
   ip_hash text,

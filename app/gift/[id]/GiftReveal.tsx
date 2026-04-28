@@ -53,6 +53,7 @@ export default function GiftReveal({ tone, firstName, challengeUrl, leadId }: Pr
               greeting={greeting}
               tone={tone}
               finalUrl={finalUrl}
+              leadId={leadId}
             />
           </div>
         </div>
@@ -125,12 +126,23 @@ function OpenFace({
   greeting,
   tone,
   finalUrl,
+  leadId,
 }: {
   accent: string;
   greeting: string | null;
   tone: ToneId;
   finalUrl: string;
+  leadId?: string;
 }) {
+  const onClaim = () => {
+    if (!leadId) return;
+    void fetch('/api/claim', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ leadId }),
+    }).catch(() => {});
+  };
+
   const promiseLine =
     tone === 'maa'
       ? 'I will give myself 14 days. Even 5 minutes counts. Maa is watching, but really — I am.'
@@ -188,6 +200,7 @@ function OpenFace({
           href={finalUrl}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={onClaim}
           className="block w-full text-center text-white border-0 px-5 py-4 rounded-full text-[15px] font-medium font-sans no-underline mt-auto"
           style={{ background: accent }}
         >
