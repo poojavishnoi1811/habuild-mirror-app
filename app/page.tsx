@@ -211,11 +211,21 @@ export default function Home() {
         {/* SCREEN: LANDING */}
         {screen === 'landing' && (
           <div className="fade-up flex-1 flex flex-col">
-            <div className="mt-2 mb-8">
-              <h1 className="font-sans font-medium text-[42px] sm:text-[52px] leading-[1.06] tracking-[-0.025em] m-0 mb-5 text-[#26211D]">
-                Tell me about your day.
-              </h1>
-              <p className="font-serif italic text-[20px] sm:text-[22px] text-[#73685C] leading-snug m-0 mb-3">
+            <div className="flex justify-center mb-6">
+              <img
+                src="/landing-kitten.jpg"
+                alt="So... tell me about your day"
+                className="rounded-2xl block"
+                style={{
+                  maxWidth: 240,
+                  width: '100%',
+                  height: 'auto',
+                  boxShadow: CARD_SHADOW,
+                }}
+              />
+            </div>
+            <div className="mt-2 mb-8 text-center">
+              <p className="font-serif italic text-[22px] sm:text-[24px] text-[#73685C] leading-snug m-0 mb-3">
                 I&apos;ll tell you something true.
               </p>
               <p className="font-sans text-[14px] text-[#A99B89] m-0">
