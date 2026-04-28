@@ -134,13 +134,13 @@ Use these when in doubt.
 - [x] Supabase project created (ref `hjzgcjegpsqdjhvzitvo`, schema + RLS applied)
 - [x] Vercel + GitHub repo connected — live at https://habuild-kkd-mirror.vercel.app/
 - [ ] Domain registered
-- [ ] WhatsApp provider decision (Habuild API vs AiSensy fallback) — depends on Harish's response
+- [x] WhatsApp provider decision — Wati (Habuild's existing account); awaiting API token + template approvals
 - [x] System prompts v1 drafted (`lib/prompts.ts`, JSON output, voice ported from POC)
 - [ ] 50 test inputs collected for prompt iteration
 - [ ] Distribution prep (Person 6) — Reddit drafts, creator DM list, LinkedIn templates
 
 **Blocked on:**
-- WhatsApp provider decision until Harish confirms
+- Wati API token + template approvals (you submit templates in Wati dashboard, Meta approves in 1–24hr)
 
 **Done:**
 - Project brief locked
