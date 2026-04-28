@@ -17,7 +17,7 @@ export default async function Database() {
   const trackerUrl = process.env.NEXT_PUBLIC_TRACKER_URL ?? '';
 
   const supa = serverClient();
-  const [{ count: total }, { count: lastHour }, { count: claimed }, { data: latest }] =
+  const [{ count: total }, { count: lastHour }, { data: phoneRows }, { data: latest }] =
     await Promise.all([
       supa.from('leads').select('*', { count: 'exact', head: true }),
       supa
@@ -26,8 +26,8 @@ export default async function Database() {
         .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString()),
       supa
         .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .not('claim_clicked_at', 'is', null),
+        .select('full_phone, claim_clicked_at')
+        .returns<{ full_phone: string; claim_clicked_at: string | null }[]>(),
       supa
         .from('leads')
         .select('created_at')
@@ -37,7 +37,13 @@ export default async function Database() {
     ]);
 
   const totalLeads = total ?? 0;
-  const claimRate = totalLeads > 0 ? Math.round(((claimed ?? 0) / totalLeads) * 100) : 0;
+  const phones = phoneRows ?? [];
+  const distinctSignups = new Set(phones.map((p) => p.full_phone)).size;
+  const distinctClaimers = new Set(
+    phones.filter((p) => p.claim_clicked_at).map((p) => p.full_phone),
+  ).size;
+  const claimRate =
+    distinctSignups > 0 ? Math.round((distinctClaimers / distinctSignups) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-[#FAF7F0] text-[#26211D]">
@@ -49,21 +55,27 @@ export default async function Database() {
 
         <div className="fade-up flex-1 flex flex-col">
           <div className="text-[12px] uppercase tracking-wider text-[#A99B89] mb-4 font-sans">
-            signups
+            distinct signups
           </div>
           <div className="font-sans font-medium text-[80px] sm:text-[112px] leading-none tracking-[-0.04em] m-0 mb-3 text-[#26211D]">
-            {fmt(totalLeads)}
+            {fmt(distinctSignups)}
           </div>
-          <p className="font-serif italic text-[22px] text-[#73685C] m-0 mb-12">
+          <p className="font-serif italic text-[22px] text-[#73685C] m-0 mb-2">
             every signup logged in the shared tracker.
           </p>
+          {totalLeads > distinctSignups && (
+            <p className="text-[12px] text-[#A99B89] font-sans mb-12">
+              {fmt(totalLeads)} total submissions ({fmt(totalLeads - distinctSignups)} repeats)
+            </p>
+          )}
+          {totalLeads === distinctSignups && <div className="mb-12" />}
 
           <div className="grid grid-cols-2 gap-3 mb-10">
             <Stat label="last hour" value={`+${fmt(lastHour ?? 0)}`} />
             <Stat
               label="claim rate"
-              value={totalLeads > 0 ? `${claimRate}%` : '—'}
-              sub={totalLeads > 0 ? `${fmt(claimed ?? 0)} claimed` : undefined}
+              value={distinctSignups > 0 ? `${claimRate}%` : '—'}
+              sub={distinctSignups > 0 ? `${fmt(distinctClaimers)} of ${fmt(distinctSignups)}` : undefined}
             />
           </div>
 
