@@ -55,6 +55,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [leadId, setLeadId] = useState<string | null>(null);
+  const [landingMeme, setLandingMeme] = useState<string | null>(null);
   const [utm, setUtm] = useState<Utm>({});
   const [referrerLeadId, setReferrerLeadId] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -70,6 +71,9 @@ export default function Home() {
       campaign: sp.get('utm_campaign') ?? undefined,
     });
     setReferrerLeadId(sp.get('ref'));
+
+    const memes = ['/landing-kitten.jpg', '/landing-toddler.jpg', '/landing-stroke.jpg'];
+    setLandingMeme(memes[Math.floor(Math.random() * memes.length)]);
   }, []);
 
   useEffect(() => {
@@ -224,20 +228,6 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex justify-center mb-5">
-              <img
-                src="/landing-kitten.jpg"
-                alt="So... tell me about your day"
-                className="rounded-2xl block"
-                style={{
-                  maxWidth: 200,
-                  width: '100%',
-                  height: 'auto',
-                  boxShadow: CARD_SHADOW,
-                }}
-              />
-            </div>
-
             <div className="flex flex-col gap-3 mb-4">
               <input
                 value={name}
@@ -278,6 +268,22 @@ export default function Home() {
                 />
               </div>
             </div>
+
+            {landingMeme && (
+              <div className="flex justify-center mb-5">
+                <img
+                  src={landingMeme}
+                  alt="meme"
+                  className="rounded-2xl block"
+                  style={{
+                    maxWidth: 200,
+                    width: '100%',
+                    height: 'auto',
+                    boxShadow: CARD_SHADOW,
+                  }}
+                />
+              </div>
+            )}
 
             {error && (
               <div className="text-[13px] mb-3 font-sans" style={{ color: '#DC2626' }}>
