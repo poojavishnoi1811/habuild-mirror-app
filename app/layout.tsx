@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Newsreader, DM_Sans } from 'next/font/google';
+import { Newsreader, DM_Sans, Fraunces } from 'next/font/google';
 import './globals.css';
 
 const serif = Newsreader({
@@ -17,6 +17,14 @@ const sans = DM_Sans({
   display: 'swap',
 });
 
+const display = Fraunces({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: 'Mirror — see your day, differently',
   description: "Tell me about your day. I'll tell you something true.",
@@ -30,7 +38,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${serif.variable} ${sans.variable}`}>
+    <html lang="en" className={`${serif.variable} ${sans.variable} ${display.variable}`}>
       <body className="font-sans antialiased bg-[#FAF7F0] text-[#26211D]">{children}</body>
     </html>
   );

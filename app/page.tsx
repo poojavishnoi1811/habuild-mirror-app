@@ -255,7 +255,10 @@ export default function Home() {
                       <Icon size={22} color="#fff" strokeWidth={2} />
                     </div>
                     <div className="flex-1">
-                      <div className="text-[22px] font-medium leading-tight mb-1 text-[#26211D] tracking-tight">
+                      <div
+                        className="text-[26px] leading-tight mb-1 text-[#26211D] tracking-tight"
+                        style={{ fontFamily: 'var(--font-display)', fontWeight: 500 }}
+                      >
                         {tn.label}
                       </div>
                       <div className="text-[13px] text-[#73685C]">
