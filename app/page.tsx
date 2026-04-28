@@ -473,9 +473,9 @@ export default function Home() {
                 </p>
                 {(() => {
                   const memes = [
-                    '/landing-kitten.jpg',
                     '/landing-toddler.jpg',
                     '/landing-stroke.jpg',
+                    '/landing-popeyes.jpg',
                   ];
                   const idx = leadId
                     ? leadId.charCodeAt(leadId.length - 1) % memes.length
