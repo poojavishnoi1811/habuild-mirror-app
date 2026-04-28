@@ -5,7 +5,6 @@ import {
   Flame,
   Sparkles,
   Heart,
-  Phone,
   ArrowRight,
   ArrowLeft,
   Share2,
@@ -24,7 +23,7 @@ const ICONS: Record<IconKey, LucideIcon> = {
   heart: Heart,
 };
 
-type Screen = 'tone' | 'input' | 'loading' | 'tease' | 'capture' | 'result';
+type Screen = 'landing' | 'tone' | 'input' | 'loading' | 'result';
 
 const COUNTRY_CODES = [
   { code: '+91', flag: '🇮🇳', label: 'India' },
@@ -46,7 +45,7 @@ const splitFix = (reflection: string, fixLine: string) => ({
 const CARD_SHADOW = '0 2px 16px rgba(40,28,16,0.06)';
 
 export default function Home() {
-  const [screen, setScreen] = useState<Screen>('tone');
+  const [screen, setScreen] = useState<Screen>('landing');
   const [tone, setTone] = useState<ToneId | null>(null);
   const [dayInput, setDayInput] = useState('');
   const [aiResponse, setAiResponse] = useState<AIResponse | null>(null);
@@ -55,7 +54,6 @@ export default function Home() {
   const [countryCode, setCountryCode] = useState<string>('+91');
   const [error, setError] = useState<string | null>(null);
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
-  const [submitting, setSubmitting] = useState(false);
   const [leadId, setLeadId] = useState<string | null>(null);
   const [utm, setUtm] = useState<Utm>({});
   const [referrerLeadId, setReferrerLeadId] = useState<string | null>(null);
@@ -82,6 +80,23 @@ export default function Home() {
     return () => clearInterval(id);
   }, [screen, T]);
 
+  const handleLandingSubmit = () => {
+    const phoneOk =
+      countryCode === '+91'
+        ? phone.length === 10
+        : phone.length >= 7 && phone.length <= 12;
+    if (!name.trim() || !phoneOk) {
+      setError(
+        countryCode === '+91'
+          ? 'Need your name and a 10-digit phone number.'
+          : 'Need your name and a real phone number (7–12 digits).',
+      );
+      return;
+    }
+    setError(null);
+    setScreen('tone');
+  };
+
   const callAI = async () => {
     if (!tone) return;
     setScreen('loading');
@@ -99,59 +114,38 @@ export default function Home() {
         setScreen('input');
         return;
       }
-      setAiResponse(data as AIResponse);
-      setScreen('tease');
+      const ai = data as AIResponse;
+      setAiResponse(ai);
+
+      const { data: inserted, error: dbError } = await browserClient
+        .from('leads')
+        .insert({
+          name: name.trim(),
+          phone,
+          country_code: countryCode,
+          tone,
+          day_input: dayInput.trim(),
+          ai_response: ai,
+          source: 'web',
+          utm_source: utm.source ?? null,
+          utm_medium: utm.medium ?? null,
+          utm_campaign: utm.campaign ?? null,
+          referrer_lead_id: referrerLeadId,
+          user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
+        })
+        .select('id')
+        .single();
+
+      if (dbError) {
+        console.error('[insert] lead save failed:', dbError);
+      } else {
+        setLeadId(inserted.id);
+      }
+      setScreen('result');
     } catch {
       setError("Couldn't reach the AI. Try again.");
       setScreen('input');
     }
-  };
-
-  const handleSubmitInfo = async () => {
-    const phoneOk =
-      countryCode === '+91'
-        ? phone.length === 10
-        : phone.length >= 7 && phone.length <= 12;
-    if (!name.trim() || !phoneOk || !tone || !aiResponse) {
-      setError(
-        countryCode === '+91'
-          ? 'Need your name and a 10-digit phone number.'
-          : 'Need your name and a real phone number (7–12 digits).',
-      );
-      return;
-    }
-    setError(null);
-    setSubmitting(true);
-
-    const { data, error: dbError } = await browserClient
-      .from('leads')
-      .insert({
-        name: name.trim(),
-        phone,
-        country_code: countryCode,
-        tone,
-        day_input: dayInput.trim(),
-        ai_response: aiResponse,
-        source: 'web',
-        utm_source: utm.source ?? null,
-        utm_medium: utm.medium ?? null,
-        utm_campaign: utm.campaign ?? null,
-        referrer_lead_id: referrerLeadId,
-        user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
-      })
-      .select('id')
-      .single();
-
-    setSubmitting(false);
-
-    if (dbError) {
-      console.error('[capture] insert failed:', dbError);
-      setError('Something went wrong saving. Try again.');
-      return;
-    }
-
-    setLeadId(data.id);
-    setScreen('result');
   };
 
   const trackShare = (channel: 'whatsapp' | 'native_share' | 'copy_link') => {
@@ -164,33 +158,28 @@ export default function Home() {
   };
 
   const reset = () => {
-    setScreen('tone');
+    setScreen('landing');
     setTone(null);
     setDayInput('');
     setAiResponse(null);
-    setName('');
-    setPhone('');
     setError(null);
     setLeadId(null);
-    setSubmitting(false);
   };
 
   const goBack = () => {
     setError(null);
     if (screen === 'input') setScreen('tone');
-    else if (screen === 'tease') setScreen('input');
-    else if (screen === 'capture') setScreen('tease');
+    else if (screen === 'tone') setScreen('landing');
   };
 
-  const canGoBack = screen === 'input' || screen === 'tease' || screen === 'capture';
-  const showRestart = screen !== 'tone';
+  const canGoBack = screen === 'input' || screen === 'tone';
+  const showRestart = screen !== 'landing';
 
   const { body, fix } = aiResponse
     ? splitFix(aiResponse.reflection, aiResponse.fix_line)
     : { body: '', fix: '' };
 
   const punchLine = aiResponse?.punchy_line ?? '';
-  const teaseText = body.split(/(?<=[.!?])\s+/).slice(0, 2).join(' ');
 
   return (
     <div className="min-h-screen bg-[#FAF7F0] text-[#26211D]">
@@ -219,10 +208,10 @@ export default function Home() {
           )}
         </header>
 
-        {/* SCREEN: TONE */}
-        {screen === 'tone' && (
+        {/* SCREEN: LANDING */}
+        {screen === 'landing' && (
           <div className="fade-up flex-1 flex flex-col">
-            <div className="mt-2 mb-10">
+            <div className="mt-2 mb-8">
               <h1 className="font-sans font-medium text-[42px] sm:text-[52px] leading-[1.06] tracking-[-0.025em] m-0 mb-5 text-[#26211D]">
                 Tell me about your day.
               </h1>
@@ -230,7 +219,86 @@ export default function Home() {
                 I&apos;ll tell you something true.
               </p>
               <p className="font-sans text-[14px] text-[#A99B89] m-0">
-                Pick a voice. Type your day. Hear yourself, differently.
+                A 60-second AI read on your daily routine, in one of three voices. Plus a free
+                gift at the end.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 mb-4">
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                autoComplete="given-name"
+                className="w-full bg-white border border-[#E8DFD2] rounded-[14px] p-4 text-[#26211D] placeholder:text-[#A99B89] text-[16px] font-sans outline-none transition-colors focus:border-[#26211D]"
+                style={{ boxShadow: CARD_SHADOW }}
+              />
+              <div className="flex gap-2 w-full">
+                <select
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                  aria-label="Country code"
+                  className="shrink-0 w-[96px] bg-white border border-[#E8DFD2] rounded-[14px] py-4 px-2 text-[#26211D] text-[16px] font-sans outline-none appearance-none text-center"
+                  style={{ boxShadow: CARD_SHADOW }}
+                >
+                  {COUNTRY_CODES.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.flag} {c.code}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  value={phone}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, '');
+                    const max = countryCode === '+91' ? 10 : 12;
+                    setPhone(digits.slice(0, max));
+                  }}
+                  maxLength={countryCode === '+91' ? 10 : 12}
+                  placeholder="Phone number"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel"
+                  className="flex-1 min-w-0 bg-white border border-[#E8DFD2] rounded-[14px] p-4 text-[#26211D] placeholder:text-[#A99B89] text-[16px] font-sans outline-none transition-colors focus:border-[#26211D]"
+                  style={{ boxShadow: CARD_SHADOW }}
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div className="text-[13px] mb-3 font-sans" style={{ color: '#DC2626' }}>
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={handleLandingSubmit}
+              className="bg-[#26211D] text-white border-0 px-6 py-4 rounded-full text-base font-semibold flex items-center justify-center gap-2.5 font-sans hover:bg-black transition-colors mb-2"
+            >
+              Begin <ArrowRight size={18} />
+            </button>
+            <div className="text-[11px] text-[#A99B89] text-center font-sans">
+              we won&apos;t share your number
+            </div>
+
+            <div className="mt-auto pt-10 text-[12px] text-[#A99B89] text-center">
+              30-second read · brutally honest · share-worthy
+            </div>
+          </div>
+        )}
+
+        {/* SCREEN: TONE */}
+        {screen === 'tone' && (
+          <div className="fade-up flex-1 flex flex-col">
+            <div className="mt-2 mb-10">
+              <div className="text-[12px] uppercase tracking-wider text-[#A99B89] font-sans mb-3">
+                Step 1 of 2
+              </div>
+              <h1 className="font-sans font-medium text-[36px] sm:text-[44px] leading-[1.06] tracking-[-0.025em] m-0 mb-3 text-[#26211D]">
+                Pick a voice.
+              </h1>
+              <p className="font-sans text-[14px] text-[#73685C] m-0">
+                Three personalities. Same brutal honesty. Choose the one that fits.
               </p>
             </div>
 
@@ -346,127 +414,6 @@ export default function Home() {
               {T.loadingMessages[loadingMsgIdx]}…
             </div>
             <div className="text-[12px] text-[#A99B89] font-sans">this takes about 10 seconds</div>
-          </div>
-        )}
-
-        {/* SCREEN: TEASE */}
-        {screen === 'tease' && T && (
-          <div className="fade-up flex-1 flex flex-col">
-            <div className="text-[12px] mb-4 font-sans" style={{ color: T.accent }}>
-              — {T.label.toLowerCase()} · partial
-            </div>
-
-            <div
-              className="bg-white border border-[#E8DFD2] rounded-2xl p-6 mb-6 relative"
-              style={{ boxShadow: CARD_SHADOW }}
-            >
-              <p className="font-serif text-[22px] leading-snug m-0 italic text-[#26211D]">
-                &ldquo;{teaseText}&rdquo;
-              </p>
-
-              <div
-                className="mt-5 pt-5 border-t border-dashed border-[#E8DFD2] select-none pointer-events-none opacity-60 font-serif text-[#A99B89]"
-                style={{ filter: 'blur(6px)' }}
-              >
-                <p className="text-lg leading-relaxed m-0">
-                  ████████ ████ ████████ ██████ ████████ ████████ ██████ ████████ ████ ███████
-                  ██████ ████████.
-                </p>
-                <p className="text-lg leading-relaxed mt-3 mb-0" style={{ color: T.accent }}>
-                  ███████ → ████ ███████ ████ ████████.
-                </p>
-              </div>
-            </div>
-
-            <div
-              className="rounded-2xl p-5 mb-5 text-white"
-              style={{ background: T.accent, boxShadow: CARD_SHADOW }}
-            >
-              <div className="text-[12px] opacity-90 mb-2 font-sans uppercase tracking-wider">Unlock the rest</div>
-              <div className="font-sans font-medium text-[20px] leading-snug">
-                See your full read + claim your gift.
-              </div>
-            </div>
-
-            <button
-              onClick={() => setScreen('capture')}
-              className="bg-[#26211D] text-white border-0 px-6 py-4 rounded-full text-base font-semibold flex items-center justify-center gap-2.5 font-sans hover:bg-black transition-colors"
-            >
-              <Phone size={18} /> Unlock my full read
-            </button>
-          </div>
-        )}
-
-        {/* SCREEN: CAPTURE */}
-        {screen === 'capture' && T && (
-          <div className="fade-up flex-1 flex flex-col">
-            <div className="mb-6">
-              <div className="text-[12px] mb-3 font-sans" style={{ color: T.accent }}>
-                — one step left
-              </div>
-              <h2 className="font-sans font-medium text-[30px] leading-[1.12] tracking-tight m-0 text-[#26211D]">
-                Almost there.
-              </h2>
-            </div>
-
-            <div className="flex flex-col gap-3 mb-4">
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                autoComplete="given-name"
-                className="w-full bg-white border border-[#E8DFD2] rounded-[14px] p-4 text-[#26211D] placeholder:text-[#A99B89] text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
-                style={{ ['--tone-accent' as never]: T.accent, boxShadow: CARD_SHADOW }}
-              />
-              <div className="flex gap-2 w-full">
-                <select
-                  value={countryCode}
-                  onChange={(e) => setCountryCode(e.target.value)}
-                  aria-label="Country code"
-                  className="shrink-0 w-[96px] bg-white border border-[#E8DFD2] rounded-[14px] py-4 px-2 text-[#26211D] text-[16px] font-sans outline-none appearance-none text-center"
-                  style={{ boxShadow: CARD_SHADOW }}
-                >
-                  {COUNTRY_CODES.map((c) => (
-                    <option key={c.code} value={c.code}>
-                      {c.flag} {c.code}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  value={phone}
-                  onChange={(e) => {
-                    const digits = e.target.value.replace(/\D/g, '');
-                    const max = countryCode === '+91' ? 10 : 12;
-                    setPhone(digits.slice(0, max));
-                  }}
-                  maxLength={countryCode === '+91' ? 10 : 12}
-                  placeholder="Phone number"
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel"
-                  className="flex-1 min-w-0 bg-white border border-[#E8DFD2] rounded-[14px] p-4 text-[#26211D] placeholder:text-[#A99B89] text-[16px] font-sans outline-none transition-colors focus:border-[var(--tone-accent)]"
-                  style={{ ['--tone-accent' as never]: T.accent, boxShadow: CARD_SHADOW }}
-                />
-              </div>
-            </div>
-
-            {error && (
-              <div className="text-[13px] mb-3 font-sans" style={{ color: T.accent }}>
-                {error}
-              </div>
-            )}
-
-            <button
-              onClick={handleSubmitInfo}
-              disabled={submitting}
-              className="border-0 px-6 py-4 rounded-full text-base font-semibold flex items-center justify-center gap-2.5 font-sans mb-3 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: T.accent, color: '#fff' }}
-            >
-              <ArrowRight size={18} /> {submitting ? 'Unlocking…' : 'Show me my full read'}
-            </button>
-            <div className="text-[11px] text-[#A99B89] text-center font-sans">
-              we won&apos;t share your number
-            </div>
           </div>
         )}
 
