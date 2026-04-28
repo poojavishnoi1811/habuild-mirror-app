@@ -152,6 +152,15 @@ export default function Home() {
     setScreen('result');
   };
 
+  const trackShare = (channel: 'whatsapp' | 'native_share' | 'copy_link') => {
+    if (!leadId) return;
+    void fetch('/api/share-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ leadId, channel }),
+    }).catch(() => {});
+  };
+
   const reset = () => {
     setScreen('tone');
     setTone(null);
@@ -212,7 +221,7 @@ export default function Home() {
         {screen === 'tone' && (
           <div className="fade-up flex-1 flex flex-col">
             <div className="mt-2 mb-10">
-              <h1 className="font-sans font-bold text-[42px] sm:text-[56px] leading-[1.05] tracking-[-0.025em] m-0 mb-5 text-[#26211D]">
+              <h1 className="font-sans font-medium text-[42px] sm:text-[52px] leading-[1.06] tracking-[-0.025em] m-0 mb-5 text-[#26211D]">
                 Tell me about your day.
               </h1>
               <p className="font-serif italic text-[20px] sm:text-[22px] text-[#73685C] leading-snug m-0 mb-3">
@@ -250,10 +259,10 @@ export default function Home() {
                       <Icon size={22} color="#fff" strokeWidth={2} />
                     </div>
                     <div className="flex-1">
-                      <div className="font-sans font-semibold text-[20px] leading-tight mb-1 text-[#26211D]">
+                      <div className="text-[22px] font-medium leading-tight mb-1 text-[#26211D] tracking-tight">
                         {tn.label}
                       </div>
-                      <div className="text-[12px] text-[#73685C]">
+                      <div className="text-[13px] text-[#73685C]">
                         {tn.sub} · ages {tn.age}
                       </div>
                     </div>
@@ -276,7 +285,7 @@ export default function Home() {
               <div className="text-[12px] mb-3 font-sans" style={{ color: T.accent }}>
                 — {T.label.toLowerCase()}
               </div>
-              <h2 className="font-sans font-bold text-[32px] leading-[1.1] tracking-tight m-0 mb-3 text-[#26211D]">
+              <h2 className="font-sans font-medium text-[30px] leading-[1.12] tracking-tight m-0 mb-3 text-[#26211D]">
                 Type your day.
               </h2>{/* spacer */}
               <p className="font-sans text-[14px] text-[#73685C] leading-relaxed m-0">
@@ -328,7 +337,7 @@ export default function Home() {
                 return <Icon size={36} color="#fff" />;
               })()}
             </div>
-            <div className="font-sans font-semibold text-[28px] leading-tight mb-3 text-[#26211D]">
+            <div className="font-sans font-medium text-[26px] leading-tight mb-3 text-[#26211D] tracking-tight">
               {T.loadingMessages[loadingMsgIdx]}…
             </div>
             <div className="text-[12px] text-[#A99B89] font-sans">this takes about 10 seconds</div>
@@ -369,7 +378,7 @@ export default function Home() {
               style={{ background: T.accent, boxShadow: CARD_SHADOW }}
             >
               <div className="text-[12px] opacity-90 mb-2 font-sans uppercase tracking-wider">Unlock the rest</div>
-              <div className="font-sans font-bold text-[20px] leading-snug mb-1">
+              <div className="font-sans font-medium text-[20px] leading-snug mb-1">
                 See the full read + your 14-day reset plan.
               </div>
               <div className="font-sans text-[13px] opacity-90">
@@ -393,7 +402,7 @@ export default function Home() {
               <div className="text-[12px] mb-3 font-sans" style={{ color: T.accent }}>
                 — one step left
               </div>
-              <h2 className="font-sans font-bold text-[32px] leading-[1.1] tracking-tight m-0 mb-2 text-[#26211D]">
+              <h2 className="font-sans font-medium text-[30px] leading-[1.12] tracking-tight m-0 mb-2 text-[#26211D]">
                 Where do I send this?
               </h2>
               <p className="font-sans text-[14px] text-[#73685C] leading-relaxed m-0">
@@ -519,6 +528,7 @@ export default function Home() {
                   const msg = encodeURIComponent(
                     `bro this AI just ${verb} and honestly i think you need this more than i did. try it: ${link}`,
                   );
+                  trackShare('whatsapp');
                   window.open(`https://wa.me/?text=${msg}`, '_blank');
                 }}
                 className="bg-[#25D366] text-white border-0 px-5 py-3.5 rounded-full text-[15px] font-semibold flex items-center justify-center gap-2.5 font-sans"
@@ -531,10 +541,12 @@ export default function Home() {
                   const origin = window.location.origin;
                   const url = leadId ? `${origin}/r/${leadId}` : origin;
                   if (navigator.share) {
+                    trackShare('native_share');
                     void navigator.share({ title: 'Mirror', text: punchLine, url });
                     return;
                   }
                   if (navigator.clipboard) {
+                    trackShare('copy_link');
                     void navigator.clipboard.writeText(`"${punchLine}" — try Mirror: ${url}`);
                   }
                 }}

@@ -70,7 +70,7 @@ export default async function SharePage({ params }: Props) {
         </header>
 
         <div className="fade-up flex-1 flex flex-col">
-          <h1 className="font-sans font-bold text-[36px] leading-[1.1] tracking-[-0.025em] m-0 mb-6 text-[#26211D]">
+          <h1 className="font-sans font-medium text-[34px] leading-[1.12] tracking-[-0.025em] m-0 mb-6 text-[#26211D]">
             {name} just got{' '}
             <em className="font-serif italic font-normal" style={{ color: T.accent }}>
               {T.label.toLowerCase()}
@@ -104,7 +104,7 @@ export default async function SharePage({ params }: Props) {
             style={{ background: T.accent, boxShadow: CARD_SHADOW }}
           >
             <div className="text-[12px] opacity-90 mb-2 font-sans uppercase tracking-wider">Want yours?</div>
-            <div className="font-sans font-bold text-[20px] leading-snug">
+            <div className="font-sans font-medium text-[20px] leading-snug">
               30 seconds. Type your day. Hear yourself, differently.
             </div>
           </div>
