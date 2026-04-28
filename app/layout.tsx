@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Newsreader, Inter } from 'next/font/google';
+import { Newsreader, DM_Sans } from 'next/font/google';
 import './globals.css';
 
 const serif = Newsreader({
@@ -10,9 +10,9 @@ const serif = Newsreader({
   display: 'swap',
 });
 
-const sans = Inter({
+const sans = DM_Sans({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-sans',
   display: 'swap',
 });
